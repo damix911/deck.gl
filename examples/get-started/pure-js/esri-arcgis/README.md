@@ -9,8 +9,6 @@ with [webpack-dev-server](https://webpack.js.org/guides/development/#webpack-dev
 
 ## Usage
 
-To run this example, you _don't_ need an API key because the guys and the girls that make the [Esri ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/) are awesome!
-
 To install dependencies:
 
 ```bash

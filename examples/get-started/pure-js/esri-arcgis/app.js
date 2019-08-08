@@ -1,113 +1,149 @@
 /* global document, esri */
 
-import { ready, layers, EsriDeckLayer } from "./esri-deck";
+import { Deck } from "@deck.gl/core";
+import { ScatterplotLayer } from '@deck.gl/layers';
 
-window["require"]([
+// In this sample app we loaded the ArcGIS JavaScript API
+// using a <script> tag. We can access all the classes in
+// the public API through the global require() function.
+const globalRequire = window["require"];
+
+globalRequire([
   "esri/Map",
   "esri/views/MapView",
-], function(
-  Map,
-  MapView
-) {
-  var map = new Map({
-    basemap: "streets"
+  "esri/layers/Layer",
+  "esri/views/2d/layers/BaseLayerViewGL2D",
+  "esri/core/Handles"
+],
+function(
+    Map,
+    MapView,
+    Layer,
+    BaseLayerViewGL2D,
+    Handles
+  ) {
+  // Layer view that delegates rendering to a deck.gl instance.
+  const EsriDeckLayerView2D = BaseLayerViewGL2D.createSubclass({
+    properties: {
+      deck: {},
+      handles: {}
+    },
+  
+    constructor: function() {
+      this.handles = new Handles();
+    },
+  
+    attach: function() {
+      this.deck = new Deck({
+        _customRender: redrawReason => this.deck._drawLayers(redrawReason, { clearCanvas: false }),
+        gl: this.context,
+        controller: false
+      });
+  
+      this.handles.add([
+        this.layer.on("redraw", () => {
+          this.redraw();
+        })
+      ]);
+  
+      this.redraw();
+    },
+  
+    redraw: function () {
+      var deckLayer = this.layer.getDeckLayer();
+  
+      if (!Array.isArray(deckLayer)) {
+        deckLayer = [deckLayer];
+      }
+  
+      this.deck.setProps({
+        layers: deckLayer
+      });
+  
+      this.requestRender();
+    },
+  
+    detach: function () {
+      this.deck = null;
+      this.handles.removeAll();
+    },
+  
+    render: function(renderParameters) {
+      const state = renderParameters.state;
+  
+      this.deck.setProps({
+        viewState: {
+          latitude: this.view.center.latitude,
+          longitude: this.view.center.longitude,
+          zoom: this.view.featuresTilingScheme.scaleToLevel(state.scale),
+          bearing: -state.rotation,
+          pitch: 0
+        }
+      });
+  
+      this.deck.redraw(true);
+    }
+  });
+  
+  // A layer that displays inside a MapView using an instance
+  // of the layer view defined above.
+  const EsriDeckLayer = Layer.createSubclass({
+    properties: {
+      getDeckLayer: {}
+    },
+  
+    redraw: function () {
+      this.emit("redraw");
+    },
+  
+    createLayerView: function(view) {
+      if (view.type === "2d") {
+        return new EsriDeckLayerView2D({
+          view: view,
+          layer: this
+        });
+      }
+    }
+  });
+  
+  // We use this new layer class to wrap a deck.gl layer.
+  const layer = new EsriDeckLayer({
+    getDeckLayer() {
+      return new ScatterplotLayer({
+        id: 'scatterplot-layer',
+        data: [
+          {
+            city: "My Point",
+            coordinates: [
+              -117.1825 + 0.005 * Math.cos(performance.now() * 0.001),
+              34.0556 + 0.005 * Math.sin(performance.now() * 0.001)
+            ]
+          }
+        ],
+        stroked: true,
+        filled: true,
+        lineWidthMinPixels: 1,
+        getPosition: d => d.coordinates,
+        getRadius: d => 50,
+        getFillColor: d => [0, 200, 140],
+        getLineColor: d => [200, 200, 200]
+      });
+    }
   });
 
-  var view = new MapView({
+  // Animate the layer.
+  setInterval(() => {
+    layer.redraw();
+  }, 20);
+
+  // Add the map to the web page.
+  const view = new MapView({
     container: "viewDiv",
-    map: map,
+    map: new Map({
+      basemap: "streets-night-vector",
+      layers: [layer]
+    }),
     center: [-117.1825, 34.0556],
     zoom: 14
   });
-  
-  ready.then(() => {
-    const layer = new EsriDeckLayer({
-      getDeckLayer() {
-        return new layers.ScatterplotLayer({
-          id: 'scatterplot-layer',
-          data: [{ city: "Redlands", coordinates: [-117.1825, 34.0556] }],
-          stroked: true,
-          lineWidthMinPixels: 1,
-          lineWidthMaxPixels: 1,
-          radiusMinPixels: 10,
-          radiusMaxPixels: 30,
-          getPosition: d => d.coordinates,
-          getRadius: d => Math.sqrt(d.exits),
-          getFillColor: d => [255, 140, 0],
-          getLineColor: d => [0, 0, 0]
-        });
-      }
-    });
-
-    map.layers.add(layer);
-  });
-}
-);
-
-/*
-import {GoogleMapsOverlay as DeckOverlay} from '@deck.gl/google-maps';
-import {GeoJsonLayer, ArcLayer} from '@deck.gl/layers';
-
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-const AIR_PORTS =
-  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
-
-// Set your Google Maps API key here or via environment variable
-const GOOGLE_MAPS_API_KEY = process.env.GoogleMapsAPIKey; // eslint-disable-line
-const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=visualization&v=3.34`;
-
-function loadScript(url) {
-  const script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = url;
-  const head = document.querySelector('head');
-  head.appendChild(script);
-  return new Promise(resolve => {
-    script.onload = resolve;
-  });
-}
-
-loadScript(GOOGLE_MAPS_API_URL).then(() => {
-  const map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.47, lng: 0.45},
-    zoom: 5
-  });
-
-  const overlay = new DeckOverlay({
-    layers: [
-      new GeoJsonLayer({
-        id: 'airports',
-        data: AIR_PORTS,
-        // Styles
-        filled: true,
-        pointRadiusMinPixels: 2,
-        opacity: 1,
-        pointRadiusScale: 2000,
-        getRadius: f => 11 - f.properties.scalerank,
-        getFillColor: [200, 0, 80, 180],
-        // Interactive props
-        pickable: true,
-        autoHighlight: true,
-        onClick: info =>
-          // eslint-disable-next-line
-          info.object && alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
-      }),
-      new ArcLayer({
-        id: 'arcs',
-        data: AIR_PORTS,
-        dataTransform: d => d.features.filter(f => f.properties.scalerank < 4),
-        // Styles
-        getSourcePosition: f => [-0.4531566, 51.4709959], // London
-        getTargetPosition: f => f.geometry.coordinates,
-        getSourceColor: [0, 128, 200],
-        getTargetColor: [200, 0, 80],
-        getWidth: 1
-      })
-    ]
-  });
-
-  overlay.setMap(map);
 });
-
-
-*/
