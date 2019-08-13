@@ -91,7 +91,11 @@ function(
 
 
       this.deck = new Deck({
-        _customRender: redrawReason => this.deck._drawLayers(redrawReason, { clearCanvas: false }),
+        // _customRender: redrawReason => this.deck._drawLayers(redrawReason, { clearCanvas: false }),
+        onBeforeRender: ({gl}) => {
+          // bind your frame buffer here
+          gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+        },
         gl: gl,
         controller: false
       });
@@ -139,9 +143,9 @@ function(
         }
       });
   
-      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
-      this.deck.redraw(true);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      // gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+      // this.deck.redraw(true);
+      // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
       
 
