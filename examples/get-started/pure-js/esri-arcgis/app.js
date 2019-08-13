@@ -30,27 +30,46 @@ function(
     },
   
     constructor: function() {
+      // Handles are used to keep track of the properties
+      // and events we start listening to.
       this.handles = new Handles();
     },
   
+    // Attach is called as soon as the layer view is ready to start rendering.
     attach: function() {
       this.deck = new Deck({
+        initialViewState: {},
+
+        // We don't want the backbuffer to be cleared because it is where
+        // the ArcGIS API for JavaScript has already rendered a map; we
+        // want to keep drawing on top of it.
         _customRender: redrawReason => this.deck._drawLayers(redrawReason, { clearCanvas: false }),
-        gl: this.context,
+        
+        // Input is handled by the ArcGIS API for JavaScript.
         controller: false,
-        autoResizeDrawingBuffer: false,
-        initialViewState: {}
+
+        // We use the same WebGL context as the ArcGIS API for JavaScript.
+        gl: this.context,
+
+        // This must be set to false or the we may experience flickering for certain
+        // viewport sizes with non-1 pixel ratios.
+        autoResizeDrawingBuffer: false
       });
   
+      // The redraw() request must be forwarded from the layer to the layer view.
+      // We listen to the event on the layer and propagate it to the layer view.
       this.handles.add([
         this.layer.on("redraw", () => {
           this.redraw();
         })
       ]);
   
+      // We need to start drawing the deck.gl layer immediately.
       this.redraw();
     },
   
+    // This method is called whenever the deck.gl layer changes and must be
+    // displayed.
     redraw: function () {
       let deckLayer = this.layer.getDeckLayer();
   
@@ -61,18 +80,22 @@ function(
       this.deck.setProps({
         layers: deckLayer
       });
-  
+
+      // We need to tell the layer view that it must redraw itself.
       this.requestRender();
     },
   
+    // Called when the layer must be destroyed.
     detach: function () {
       this.deck = null;
       this.handles.removeAll();
     },
   
+    // Called every time that the layer view must be rendered.
     render: function(renderParameters) {
       const state = renderParameters.state;
   
+      // The view state must be kept in-sync with the MapView of the ArcGIS API.
       this.deck.setProps({
         viewState: {
           latitude: this.view.center.latitude,
@@ -83,6 +106,7 @@ function(
         }
       });
   
+      // We redraw the deck immediately.
       this.deck.redraw(true);
     }
   });
@@ -94,10 +118,14 @@ function(
       getDeckLayer: {}
     },
   
+    // Calling redraw() on the layer causes redraw() to
+    // be called on the layer view.
     redraw: function () {
       this.emit("redraw");
     },
   
+    // Called by the MapView whenever a layer view
+    // needs to be created for a given layer.
     createLayerView: function(view) {
       if (view.type === "2d") {
         return new EsriDeckLayerView2D({
@@ -109,7 +137,9 @@ function(
   });
   
   // We use this new layer class to wrap a deck.gl layer.
+  // The deck.gl layer is the result of a callback.
   const layer = new EsriDeckLayer({
+    // Returns a time-dependent scatterplot layer.
     getDeckLayer() {
       return new ScatterplotLayer({
         id: 'scatterplot-layer',
@@ -136,9 +166,10 @@ function(
   // Animate the layer.
   setInterval(() => {
     layer.redraw();
-  }, 20);
+  }, 10);
 
-  // Add the map to the web page.
+  // In the ArcGIS API for JavaScript the MapView is responsible
+  // for displaying a Map, which usually contains at least a basemap.
   const view = new MapView({
     container: "viewDiv",
     map: new Map({
