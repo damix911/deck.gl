@@ -37,7 +37,9 @@ function(
       this.deck = new Deck({
         _customRender: redrawReason => this.deck._drawLayers(redrawReason, { clearCanvas: false }),
         gl: this.context,
-        controller: false
+        controller: false,
+        autoResizeDrawingBuffer: false,
+        initialViewState: {}
       });
   
       this.handles.add([
@@ -50,7 +52,7 @@ function(
     },
   
     redraw: function () {
-      var deckLayer = this.layer.getDeckLayer();
+      let deckLayer = this.layer.getDeckLayer();
   
       if (!Array.isArray(deckLayer)) {
         deckLayer = [deckLayer];

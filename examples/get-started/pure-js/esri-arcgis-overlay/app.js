@@ -10,10 +10,7 @@ const globalRequire = window["require"];
 
 globalRequire([
   "esri/Map",
-  "esri/views/MapView",
-  "esri/layers/Layer",
-  "esri/views/2d/layers/BaseLayerViewGL2D",
-  "esri/core/Handles"
+  "esri/views/MapView"
 ],
 function(
     Map,
@@ -41,7 +38,6 @@ function(
     });
   }
 
-  // Add the map to the web page.
   const view = new MapView({
     container: "viewDiv",
     map: new Map({
@@ -51,13 +47,13 @@ function(
     zoom: 14
   });
 
-  var deck = new Deck({
-    controller: false,
-    views: new DeckMapView({id: 'mini-map'})
-  });
-
   view.when().then(() => {
-    // Animate the layer.
+    const deck = new Deck({
+      controller: false,
+      views: new DeckMapView(),
+      initialViewState: {}
+    });
+    
     setInterval(() => {
       deck.setProps({
         layers: [
@@ -71,6 +67,6 @@ function(
           pitch: 0
         }
       });
-    }, 0);
+    }, 10);
   })
 });
