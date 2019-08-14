@@ -1,7 +1,7 @@
 /* global document, esri */
 
 import { Deck } from "@deck.gl/core";
-import { ScatterplotLayer } from '@deck.gl/layers';
+import { TripsLayer } from '@deck.gl/geo-layers';
 
 // In this sample app we loaded the ArcGIS JavaScript API
 // using a <script> tag. We can access all the classes in
@@ -16,26 +16,25 @@ function(
     Map,
     MapView
   ) {
-  // Returns a time-dependent scatterplot layer.
   function getDeckLayer() {
-    return new ScatterplotLayer({
-      id: 'scatterplot-layer',
-      data: [
-        {
-          city: "My Point",
-          coordinates: [
-            -117.1825 + 0.005 * Math.cos(performance.now() * 0.001),
-            34.0556 + 0.005 * Math.sin(performance.now() * 0.001)
-          ]
-        }
-      ],
-      stroked: true,
-      filled: true,
-      lineWidthMinPixels: 1,
-      getPosition: d => d.coordinates,
-      getRadius: d => 50,
-      getFillColor: d => [0, 200, 140],
-      getLineColor: d => [200, 200, 200]
+    const loopLength = 1800;
+    const animationSpeed = 30;
+    const timestamp = Date.now() / 1000;
+    const loopTime = loopLength / animationSpeed;
+    let currentTime = ((timestamp % loopTime) / loopTime) * loopLength;
+    
+    return new TripsLayer({
+      id: 'trips',
+      data: 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/trips/trips-v7.json',
+      getPath: d => d.path,
+      getTimestamps: d => d.timestamps,
+      getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
+      opacity: 1.0,
+      widthMinPixels: 4,
+      rounded: true,
+      trailLength: 180,
+      currentTime,
+      shadowEnabled: false
     });
   }
 
@@ -46,7 +45,7 @@ function(
     map: new Map({
       basemap: "streets-night-vector"
     }),
-    center: [-117.1825, 34.0556],
+    center: [-74, 40.72],
     zoom: 14
   });
 

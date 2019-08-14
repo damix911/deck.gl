@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@deck.gl/core": "^7.0.0-beta",
+    "@deck.gl/geo-layers": "^7.2.1",
     "@deck.gl/layers": "^7.0.0-beta"
   },
   "devDependencies": {
