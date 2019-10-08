@@ -190,7 +190,7 @@ function(
       this.deck.redraw(true);
 
       // If the screen size has changed we need to resize the texture.
-      if (!this.texture || this.textureWidth !== this.deckGLContext.canvas.width || this.textureHeight !== this.deckGLContext.canvas.height) {
+      if (!this.texture || this.imageWidth !== this.deckGLContext.canvas.width || this.imageHeight !== this.deckGLContext.canvas.height) {
         if (this.texture) {
           gl.deleteTexture(this.texture);
         }
@@ -198,8 +198,8 @@ function(
         this.texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
         
-        this.textureWidth = this.deckGLContext.canvas.width;
-        this.textureHeight = this.deckGLContext.canvas.height;
+        this.imageWidth = this.deckGLContext.canvas.width;
+        this.imageHeight = this.deckGLContext.canvas.height;
         this.imageData = new Uint8Array(this.deckGLContext.canvas.width * this.deckGLContext.canvas.height * 4);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.deckGLContext.canvas.width, this.deckGLContext.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
 
