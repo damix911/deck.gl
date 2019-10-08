@@ -53,6 +53,7 @@ test('deck.gl', t => {
   require('./modules/core/lib/pick-layers.spec');
 
   require('./render');
+  require('./interaction');
 
   t.end();
 });
