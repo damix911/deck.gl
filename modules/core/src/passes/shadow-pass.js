@@ -1,5 +1,11 @@
 import {default as LayersPass} from './layers-pass';
-import {Framebuffer, Texture2D, Renderbuffer, withParameters} from '@luma.gl/core';
+import {
+  Framebuffer,
+  Texture2D,
+  Renderbuffer,
+  withParameters,
+  cssToDeviceRatio
+} from '@luma.gl/core';
 
 export default class ShadowPass extends LayersPass {
   constructor(gl, props) {
@@ -48,27 +54,26 @@ export default class ShadowPass extends LayersPass {
       },
       () => {
         const viewport = params.viewports[0];
-        const width = viewport.width * this.props.pixelRatio;
-        const height = viewport.height * this.props.pixelRatio;
+        const pixelRatio = cssToDeviceRatio(this.gl);
+        const width = viewport.width * pixelRatio;
+        const height = viewport.height * pixelRatio;
         if (width !== target.width || height !== target.height) {
           target.resize({width, height});
         }
 
-        super.render(Object.assign(params, {outputBuffer: target}));
+        super.render({...params, target, pass: 'shadow'});
       }
     );
   }
 
-  getModuleParameters(layer, effects, effectProps) {
-    const moduleParameters = Object.assign(Object.create(layer.props), {
-      viewport: layer.context.viewport,
-      pickingActive: 0,
-      drawToShadowMap: true,
-      devicePixelRatio: this.props.pixelRatio
-    });
+  shouldDrawLayer(layer) {
+    return layer.props.shadowEnabled !== false;
+  }
 
-    Object.assign(moduleParameters, effectProps);
-    return moduleParameters;
+  getModuleParameters() {
+    return {
+      drawToShadowMap: true
+    };
   }
 
   delete() {

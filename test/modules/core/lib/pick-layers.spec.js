@@ -157,7 +157,7 @@ const TEST_CASES = [
             height: 100
           },
           results: {
-            count: 33
+            count: 34
           }
         },
         {
@@ -507,8 +507,8 @@ test(`pickingTest`, t => {
             ? pickInfos.map(x => x.object.count)
             : [pickInfos.object.count];
           t.deepEqual(
-            pickingCase.results.cellCounts,
             cellCounts,
+            pickingCase.results.cellCounts,
             'Aggregation count for individual cells should match'
           );
         }

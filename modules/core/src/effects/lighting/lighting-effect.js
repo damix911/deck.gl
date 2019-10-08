@@ -1,9 +1,4 @@
-import {
-  AmbientLight,
-  Texture2D,
-  setDefaultShaderModules,
-  getDefaultShaderModules
-} from '@luma.gl/core';
+import {AmbientLight, Texture2D, ProgramManager} from '@luma.gl/core';
 import DirectionalLight from './directional-light';
 import Effect from '../../lib/effect';
 import {Matrix4, Vector3} from 'math.gl';
@@ -35,8 +30,10 @@ export default class LightingEffect extends Effect {
 
     this.shadowColor = DEFAULT_SHADOW_COLOR;
     this.shadowPasses = [];
-    this.dummyShadowMaps = [];
+    this.shadowMaps = [];
+    this.dummyShadowMap = null;
     this.shadow = false;
+    this.programManager = null;
 
     for (const key in props) {
       const lightSource = props[key];
@@ -58,59 +55,71 @@ export default class LightingEffect extends Effect {
     }
     this._applyDefaultLights();
 
-    if (this.directionalLights.some(light => light.shadow)) {
-      this.shadow = true;
-      this._addShadowModule();
-    }
+    this.shadow = this.directionalLights.some(light => light.shadow);
   }
 
-  prepare(gl, {layers, viewports, onViewportActive, views, pixelRatio}) {
-    if (!this.shadow) return {};
+  preRender(gl, {layers, layerFilter, viewports, onViewportActive, views}) {
+    if (!this.shadow) return;
 
     // create light matrix every frame to make sure always updated from light source
-    const shadowMatrices = this._createLightMatrix();
+    this.shadowMatrices = this._createLightMatrix();
 
     if (this.shadowPasses.length === 0) {
-      this._createShadowPasses(gl, pixelRatio);
+      this._createShadowPasses(gl);
+    }
+    if (!this.programManager) {
+      // TODO - support multiple contexts
+      this.programManager = ProgramManager.getDefaultProgramManager(gl);
+      if (shadow) {
+        this.programManager.addDefaultModule(shadow);
+      }
     }
 
-    if (this.dummyShadowMaps.length === 0) {
-      this._createDummyShadowMaps(gl);
+    if (!this.dummyShadowMap) {
+      this.dummyShadowMap = new Texture2D(gl, {
+        width: 1,
+        height: 1
+      });
     }
-
-    const shadowMaps = [];
 
     for (let i = 0; i < this.shadowPasses.length; i++) {
       const shadowPass = this.shadowPasses[i];
       shadowPass.render({
         layers,
+        layerFilter,
         viewports,
         onViewportActive,
         views,
-        effectProps: {
+        moduleParameters: {
           shadowLightId: i,
-          dummyShadowMaps: this.dummyShadowMaps,
-          shadowMatrices
+          dummyShadowMap: this.dummyShadowMap,
+          shadowMatrices: this.shadowMatrices
         }
       });
-      shadowMaps.push(shadowPass.shadowMap);
     }
-
-    return {
-      shadowMaps,
-      dummyShadowMaps: this.dummyShadowMaps,
-      shadowColor: this.shadowColor,
-      shadowMatrices
-    };
   }
 
-  getParameters(layer) {
-    const {ambientLight} = this;
-    const pointLights = this._getProjectedPointLights(layer);
-    const directionalLights = this._getProjectedDirectionalLights(layer);
-    return {
-      lightSources: {ambientLight, directionalLights, pointLights}
+  getModuleParameters(layer) {
+    const parameters = this.shadow
+      ? {
+          shadowMaps: this.shadowMaps,
+          dummyShadowMap: this.dummyShadowMap,
+          shadowColor: this.shadowColor,
+          shadowMatrices: this.shadowMatrices
+        }
+      : {};
+
+    // when not rendering to screen, turn off lighting by adding empty light source object
+    // lights shader module relies on the `lightSources` to turn on/off lighting
+    parameters.lightSources = {
+      ambientLight: this.ambientLight,
+      directionalLights: this.directionalLights.map(directionalLight =>
+        directionalLight.getProjectedLight({layer})
+      ),
+      pointLights: this.pointLights.map(pointLight => pointLight.getProjectedLight({layer}))
     };
+
+    return parameters;
   }
 
   cleanup() {
@@ -118,14 +127,16 @@ export default class LightingEffect extends Effect {
       shadowPass.delete();
     }
     this.shadowPasses.length = 0;
+    this.shadowMaps.length = 0;
 
-    for (const dummyShadowMap of this.dummyShadowMaps) {
-      dummyShadowMap.delete();
+    if (this.dummyShadowMap) {
+      this.dummyShadowMap.delete();
+      this.dummyShadowMap = null;
     }
-    this.dummyShadowMaps.length = 0;
 
-    if (this.shadow) {
-      this._removeShadowModule();
+    if (this.shadow && this.programManager) {
+      this.programManager.removeDefaultModule(shadow);
+      this.programManager = null;
     }
   }
 
@@ -141,45 +152,11 @@ export default class LightingEffect extends Effect {
     return lightMatrices;
   }
 
-  _createShadowPasses(gl, pixelRatio) {
+  _createShadowPasses(gl) {
     for (let i = 0; i < this.directionalLights.length; i++) {
-      this.shadowPasses.push(new ShadowPass(gl, {pixelRatio}));
-    }
-  }
-  _createDummyShadowMaps(gl) {
-    for (let i = 0; i < this.directionalLights.length; i++) {
-      this.dummyShadowMaps.push(
-        new Texture2D(gl, {
-          width: 1,
-          height: 1
-        })
-      );
-    }
-  }
-
-  _addShadowModule() {
-    const defaultShaderModules = getDefaultShaderModules();
-    let hasShadowModule = false;
-    for (const module of defaultShaderModules) {
-      if (module.name === `shadow`) {
-        hasShadowModule = true;
-        break;
-      }
-    }
-    if (!hasShadowModule) {
-      defaultShaderModules.push(shadow);
-      setDefaultShaderModules(defaultShaderModules);
-    }
-  }
-
-  _removeShadowModule() {
-    const defaultShaderModules = getDefaultShaderModules();
-    for (let i = 0; i < defaultShaderModules.length; i++) {
-      if (defaultShaderModules[i].name === `shadow`) {
-        defaultShaderModules.splice(i, 1);
-        setDefaultShaderModules(defaultShaderModules);
-        break;
-      }
+      const shadowPass = new ShadowPass(gl);
+      this.shadowPasses[i] = shadowPass;
+      this.shadowMaps[i] = shadowPass.shadowMap;
     }
   }
 
@@ -187,28 +164,10 @@ export default class LightingEffect extends Effect {
     const {ambientLight, pointLights, directionalLights} = this;
     if (!ambientLight && pointLights.length === 0 && directionalLights.length === 0) {
       this.ambientLight = new AmbientLight(DEFAULT_AMBIENT_LIGHT_PROPS);
-      this.directionalLights.push(new DirectionalLight(DEFAULT_DIRECTIONAL_LIGHT_PROPS[0]));
-      this.directionalLights.push(new DirectionalLight(DEFAULT_DIRECTIONAL_LIGHT_PROPS[1]));
+      this.directionalLights.push(
+        new DirectionalLight(DEFAULT_DIRECTIONAL_LIGHT_PROPS[0]),
+        new DirectionalLight(DEFAULT_DIRECTIONAL_LIGHT_PROPS[1])
+      );
     }
-  }
-
-  _getProjectedPointLights(layer) {
-    const projectedPointLights = [];
-
-    for (let i = 0; i < this.pointLights.length; i++) {
-      const pointLight = this.pointLights[i];
-      projectedPointLights.push(pointLight.getProjectedLight({layer}));
-    }
-    return projectedPointLights;
-  }
-
-  _getProjectedDirectionalLights(layer) {
-    const projectedDirectionalLights = [];
-
-    for (let i = 0; i < this.directionalLights.length; i++) {
-      const directionalLight = this.directionalLights[i];
-      projectedDirectionalLights.push(directionalLight.getProjectedLight({layer}));
-    }
-    return projectedDirectionalLights;
   }
 }
