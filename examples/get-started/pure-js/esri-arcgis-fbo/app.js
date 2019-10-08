@@ -51,8 +51,8 @@ function(
       // Create offscreen texture
       this.texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      this.imageWidth = 640;
-      this.imageHeight = 360;
+      this.imageWidth = Math.round(this.view.state.size[0]);
+      this.imageHeight = Math.round(this.view.state.size[1]);
       this.imageData = new Uint8Array(this.imageWidth * this.imageHeight * 4);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.imageWidth, this.imageHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -120,6 +120,9 @@ function(
         
         // Input is handled by the ArcGIS API for JavaScript.
         controller: false,
+
+        // We use the same WebGL context as the ArcGIS API for JavaScript.
+        gl: this.context,
 
         // This deck renders into an auxiliary framebuffer.
         _framebuffer: this.deckFbo
@@ -219,20 +222,20 @@ function(
       // }
 
       // We overlay the texture on top of the map using the full-screen quad.
-      // gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-      // gl.vertexAttribPointer(0, 2, gl.BYTE, false, 2, 0);
-      // gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+      gl.vertexAttribPointer(0, 2, gl.BYTE, false, 2, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
       
-      // gl.useProgram(this.program);
-      // gl.uniform1i(gl.getUniformLocation(this.program, "u_texture"), 0);
-      // gl.activeTexture(gl.TEXTURE0 + 0);
-      // gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      gl.useProgram(this.program);
+      gl.uniform1i(gl.getUniformLocation(this.program, "u_texture"), 0);
+      gl.activeTexture(gl.TEXTURE0 + 0);
+      gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
-      // gl.enable(gl.BLEND);
-      // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-      // gl.enableVertexAttribArray(0);
-      // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
+      gl.enableVertexAttribArray(0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
     }
   });
   
