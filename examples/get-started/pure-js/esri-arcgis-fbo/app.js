@@ -27,7 +27,7 @@ function(
     properties: {
       deck: {},
       handles: {},
-      deckGLContext: {},
+      deckFbo: {},
       program: {},
       vertexBuffer: {},
       imageData: {},
@@ -44,20 +44,28 @@ function(
   
     // Attach is called as soon as the layer view is ready to start rendering.
     attach: function() {
-      // Auxiliary canvas and context used to render deck.gl
-      const canvas = document.createElement("canvas");
-      canvas.style.border = "1px solid black";
-      canvas.style.position = "absolute";
-      canvas.style.left = "1000px";
-      canvas.style.top = "1000px";
-      document.body.appendChild(canvas);
-      this.deckGLContext = canvas.getContext("webgl", {
-        preserveDrawingBuffer: true
-      });
-
       // We use a full-screen quad and shaders to composite the frame rendered
       // with deck.gl on top of the MapView. Composition uses the MapView context.
       const gl = this.context;
+
+      // Create offscreen texture
+      this.texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      this.imageWidth = 640;
+      this.imageHeight = 360;
+      this.imageData = new Uint8Array(this.imageWidth * this.imageHeight * 4);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.imageWidth, this.imageHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.bindTexture(gl.TEXTURE_2D, null);
+
+      // Create auxiliary FBO
+      this.deckFbo = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.deckFbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
       // Vertex shader
       const vs = gl.createShader(gl.VERTEX_SHADER);
@@ -113,8 +121,8 @@ function(
         // Input is handled by the ArcGIS API for JavaScript.
         controller: false,
 
-        // This deck renders into the auxiliary context.
-        gl: this.deckGLContext,
+        // This deck renders into an auxiliary framebuffer.
+        _framebuffer: this.deckFbo
       });
   
       // The redraw() request must be forwarded from the layer to the layer view.
@@ -190,57 +198,41 @@ function(
       this.deck.redraw(true);
 
       // If the screen size has changed we need to resize the texture.
-      if (!this.texture || this.textureWidth !== this.deckGLContext.canvas.width || this.textureHeight !== this.deckGLContext.canvas.height) {
-        if (this.texture) {
-          gl.deleteTexture(this.texture);
-        }
+      // if (!this.texture || this.textureWidth !== this.deckGLContext.canvas.width || this.textureHeight !== this.deckGLContext.canvas.height) {
+      //   if (this.texture) {
+      //     gl.deleteTexture(this.texture);
+      //   }
 
-        this.texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      //   this.texture = gl.createTexture();
+      //   gl.bindTexture(gl.TEXTURE_2D, this.texture);
         
-        this.textureWidth = this.deckGLContext.canvas.width;
-        this.textureHeight = this.deckGLContext.canvas.height;
-        this.imageData = new Uint8Array(this.deckGLContext.canvas.width * this.deckGLContext.canvas.height * 4);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.deckGLContext.canvas.width, this.deckGLContext.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
+      //   this.textureWidth = this.deckGLContext.canvas.width;
+      //   this.textureHeight = this.deckGLContext.canvas.height;
+      //   this.imageData = new Uint8Array(this.deckGLContext.canvas.width * this.deckGLContext.canvas.height * 4);
+      //   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.deckGLContext.canvas.width, this.deckGLContext.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-      }
-
-      // Now we read back the pixels into a texture.
-      this.deckGLContext.readPixels(
-        0,
-        0,
-        this.deckGLContext.canvas.width,
-        this.deckGLContext.canvas.height,
-        this.deckGLContext.RGBA,
-        this.deckGLContext.UNSIGNED_BYTE,
-        this.imageData
-      );
-
-      // We upload the pixel data to the texture.
-      gl.bindTexture(gl.TEXTURE_2D, this.texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.deckGLContext.canvas.width, this.deckGLContext.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
-      gl.bindTexture(gl.TEXTURE_2D, null);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      //   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      //   gl.bindTexture(gl.TEXTURE_2D, null);
+      // }
 
       // We overlay the texture on top of the map using the full-screen quad.
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-      gl.vertexAttribPointer(0, 2, gl.BYTE, false, 2, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      // gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+      // gl.vertexAttribPointer(0, 2, gl.BYTE, false, 2, 0);
+      // gl.bindBuffer(gl.ARRAY_BUFFER, null);
       
-      gl.useProgram(this.program);
-      gl.uniform1i(gl.getUniformLocation(this.program, "u_texture"), 0);
-      gl.activeTexture(gl.TEXTURE0 + 0);
-      gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      // gl.useProgram(this.program);
+      // gl.uniform1i(gl.getUniformLocation(this.program, "u_texture"), 0);
+      // gl.activeTexture(gl.TEXTURE0 + 0);
+      // gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
-      gl.enable(gl.BLEND);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      // gl.enable(gl.BLEND);
+      // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-      gl.enableVertexAttribArray(0);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
+      // gl.enableVertexAttribArray(0);
+      // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 6);
     }
   });
   
