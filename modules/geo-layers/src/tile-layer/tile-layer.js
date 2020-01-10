@@ -1,14 +1,15 @@
+import {log} from '@deck.gl/core';
 import {CompositeLayer} from '@deck.gl/core';
 import {GeoJsonLayer} from '@deck.gl/layers';
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
-  renderSubLayers: {type: 'function', value: props => new GeoJsonLayer(props)},
-  getTileData: {type: 'function', value: ({x, y, z}) => Promise.resolve(null)},
+  renderSubLayers: {type: 'function', value: props => new GeoJsonLayer(props), compare: false},
+  getTileData: {type: 'function', value: ({x, y, z}) => Promise.resolve(null), compare: false},
   // TODO - change to onViewportLoad to align with Tile3DLayer
-  onViewportLoaded: {type: 'function', optional: true, value: null},
+  onViewportLoad: {type: 'function', optional: true, value: null, compare: false},
   // eslint-disable-next-line
-  onTileError: {type: 'function', value: err => console.error(err)},
+  onTileError: {type: 'function', value: err => console.error(err), compare: false},
   maxZoom: null,
   minZoom: 0,
   maxCacheSize: null
@@ -16,6 +17,10 @@ const defaultProps = {
 
 export default class TileLayer extends CompositeLayer {
   initializeState() {
+    if ('onViewportLoaded' in this.props) {
+      log.removed('onViewportLoaded', 'onViewportLoad')();
+    }
+
     this.state = {
       tiles: [],
       isLoaded: false
@@ -46,7 +51,13 @@ export default class TileLayer extends CompositeLayer {
         onTileError: this._onTileError.bind(this)
       });
       this.setState({tileCache});
+    } else if (changeFlags.propsChanged) {
+      // if any props changed, delete the cached layers
+      this.state.tileCache.tiles.forEach(tile => {
+        tile.layer = null;
+      });
     }
+
     const {viewport} = context;
     if (changeFlags.viewportChanged && viewport.id !== 'DEFAULT-INITIAL-VIEWPORT') {
       const z = this.getLayerZoomLevel();
@@ -59,13 +70,13 @@ export default class TileLayer extends CompositeLayer {
   }
 
   _onTileLoad() {
-    const {onViewportLoaded} = this.props;
+    const {onViewportLoad} = this.props;
     const currTiles = this.state.tiles;
     const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
     if (this.state.isLoaded !== allCurrTilesLoaded) {
       this.setState({isLoaded: allCurrTilesLoaded});
-      if (allCurrTilesLoaded && onViewportLoaded) {
-        onViewportLoaded(currTiles.filter(tile => tile._data).map(tile => tile._data));
+      if (allCurrTilesLoaded && onViewportLoad) {
+        onViewportLoad(currTiles.filter(tile => tile._data).map(tile => tile._data));
       }
     }
   }

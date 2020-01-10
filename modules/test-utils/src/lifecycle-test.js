@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 import {LayerManager, MapView, DeckRenderer} from '@deck.gl/core';
-import {VertexArrayObject} from '@luma.gl/core';
+import {VertexArrayObject} from '@luma.gl/webgl';
 
 import {makeSpy} from '@probe.gl/test-utils';
 import gl from './utils/setup-gl';
@@ -228,4 +228,4 @@ function runLayerTests(layerManager, deckRenderer, layer, testCases, spies, onEr
     Object.keys(spyMap).forEach(k => spyMap[k].reset());
   }
 }
-/* eslint-enable parameters, no-loop-func */
+/* eslint-enable max-params, no-loop-func */
