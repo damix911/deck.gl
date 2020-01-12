@@ -2,22 +2,16 @@
    <img width="150" heigth="150" src="https://webpack.js.org/assets/icon-square-big.svg" />
 </div>
 
-## Example: Use deck.gl with Mapbox
+## Example: Use deck.gl with the ArcGIS API for JavaScript
 
 Uses [Webpack](https://github.com/webpack/webpack) to bundle files and serves it
 with [webpack-dev-server](https://webpack.js.org/guides/development/#webpack-dev-server).
 
 ## Usage
 
-To run this example, you need a [Mapbox access token](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/). You can either set an environment variable:
-
-```bash
-export MapboxAccessToken=<mapbox_access_token>
-```
-
-Or set `mapboxgl.accessToken` directly in `app.js`.
-
-Other options can be found at [using with Mapbox GL](../../../../docs/get-started/using-with-mapbox-gl.md).
+This example shows how to render a deck.gl layer on top of an Esri ArcGIS basemap. The app defines a
+[custom layer view](https://developers.arcgis.com/javascript/latest/sample-code/custom-gl-visuals/index.html)
+that uses deck.gl to implement the rendering logic.
 
 To install dependencies:
 
