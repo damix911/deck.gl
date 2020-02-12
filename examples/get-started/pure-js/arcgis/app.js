@@ -6,7 +6,17 @@ import {loadModules} from "esri-loader";
 const AIR_PORTS =
   'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
   
-loadModules(["esri/Map", "esri/views/MapView", "esri/views/SceneView", "esri/views/3d/externalRenderers"]).then(([ArcGISMap, MapView, SceneView, externalRenderers]) => {
+loadModules([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/views/SceneView",
+  "esri/views/3d/externalRenderers"
+]).then(([
+  ArcGISMap,
+  MapView,
+  SceneView,
+  externalRenderers
+]) => {
   loaded.then(() => {
     const getConf = () => ({
       deckLayers: [
