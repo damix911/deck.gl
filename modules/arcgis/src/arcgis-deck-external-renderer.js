@@ -1,5 +1,7 @@
 /* eslint-disable no-invalid-this */
 
+import {FirstPersonView} from '@deck.gl/core';
+
 import {
   initializeResources,
   createOrResizeFramebuffer,
@@ -7,6 +9,8 @@ import {
   destroyFramebuffer,
   initializeDeckGL
 } from './commons';
+
+const Z_OFFSET = 0;
 
 export default function loadArcGISDeckExternalRenderer(externalRenderers, Collection) {
   function ArcGISDeckExternalRenderer(view, conf) {
@@ -31,6 +35,26 @@ export default function loadArcGISDeckExternalRenderer(externalRenderers, Collec
       Math.round(this.view.size[1] * dpr)
     );
     this.initializeDeckGL(gl);
+    
+    const esriPos = this.view.camera.position;
+    // const fovy = 0.5 * this.view.size[1] * this.view.camera.fov / this.view.size[0];
+    // const fovy = this.view.size[1] * this.view.camera.fov / this.view.size[0];
+    // const fovy = 2 * this.view.size[1] * this.view.camera.fov / this.view.size[0];
+    // const fovy = 0.5 * this.view.camera.fov;
+    // const fovy = this.view.camera.fov;
+    // const fovy = 2 * this.view.camera.fov;
+    const fovy = 30;
+
+    this.deckgl.setProps({
+      views: new FirstPersonView({ id: 'first-person', controller: false, near: 100000, far: 100000000, fovy }),
+      viewState: {
+        latitude: 0,
+        longitude: 0,
+        position: [esriPos.x, esriPos.y, esriPos.z + Z_OFFSET],
+        bearing: this.view.camera.heading,
+        pitch: 90 - this.view.camera.tilt
+      }
+    });
     this.deckLayers.on('change', () => {
       externalRenderers.requestRender(this.view);
     });
@@ -50,14 +74,16 @@ export default function loadArcGISDeckExternalRenderer(externalRenderers, Collec
       Math.round(this.view.size[1] * dpr)
     );
 
+    const esriPos = this.view.camera.position;
+
     this.deckgl.setProps({
       layers: this.deckLayers.items.slice(),
       viewState: {
-        latitude: this.view.center.latitude,
-        longitude: this.view.center.longitude,
-        zoom: this.view.zoom,
+        latitude: 0,
+        longitude: 0,
+        position: [esriPos.x, esriPos.y, esriPos.z + Z_OFFSET],
         bearing: this.view.camera.heading,
-        pitch: this.view.camera.tilt
+        pitch: 90 - this.view.camera.tilt
       }
     });
 
