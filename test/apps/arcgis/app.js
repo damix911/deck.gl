@@ -56,12 +56,14 @@ loadArcGISModules([
     },
     camera: {
       position: {
-        x: -74,
-        y: 40.65,
-        z: 5000
+        x: -74.56913418106207,
+        y: 34.67944198112559,
+        z: 306584.13835269737
       },
 
-      tilt: 0
+      tilt: 78.00556355941576,
+
+      heading: 348.0400537930362
     },
     viewingMode: 'local'
   });
@@ -74,5 +76,7 @@ loadArcGISModules([
   setInterval(() => {
     layer.deck.layers = renderLayers();
     renderer.deck.layers = renderLayers();
+
+    // console.log(sceneView.camera.position.latitude, sceneView.camera.position.longitude, sceneView.camera.position.z, sceneView.camera.tilt, sceneView.camera.heading);
   }, 50);
 });

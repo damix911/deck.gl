@@ -1,6 +1,7 @@
 /* eslint-disable no-invalid-this */
 
 import {initializeResources, render, finalizeResources} from './commons';
+import { MapView } from '@deck.gl/core';
 
 export default function createDeckRenderer(DeckProps, externalRenderers) {
   class DeckRenderer {
@@ -28,6 +29,10 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
 
     render(context) {
       const [width, height] = this.view.size;
+
+      this.deckInstance.setProps({
+        views: new MapView({x: 0, y: 0, width, height, near: 0.9})
+      });
 
       render.call(this, {
         gl: context.gl,
