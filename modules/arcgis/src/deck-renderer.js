@@ -1,7 +1,7 @@
 /* eslint-disable no-invalid-this */
 
 import {initializeResources, render, finalizeResources} from './commons';
-import { MapView } from '@deck.gl/core';
+import { FirstPersonView } from '@deck.gl/core';
 
 export default function createDeckRenderer(DeckProps, externalRenderers) {
   class DeckRenderer {
@@ -31,19 +31,24 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
       const [width, height] = this.view.size;
 
       this.deckInstance.setProps({
-        views: new MapView({x: 0, y: 0, width, height, near: 0.9})
+        // views: new FirstPersonView({x: 0, y: 0, width, height, near: 100, far: 1000000, fovy: this.view.camera.fov})
+        views: new FirstPersonView({x: 0, y: 0, width, height, near: 100, far: 1000000, fovy: 28})
       });
+
+      if (typeof this.view.camera.position.latitude === "undefined") {
+        return;
+      }
 
       render.call(this, {
         gl: context.gl,
         width,
         height,
         viewState: {
-          latitude: this.view.center.latitude,
-          longitude: this.view.center.longitude,
-          zoom: this.view.zoom,
+          latitude: this.view.camera.position.latitude,
+          longitude: this.view.camera.position.longitude,
+          position: [0, 0, this.view.camera.position.z],
           bearing: this.view.camera.heading,
-          pitch: this.view.camera.tilt
+          pitch: 90 - this.view.camera.tilt
         }
       });
     }

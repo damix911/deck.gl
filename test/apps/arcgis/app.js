@@ -13,7 +13,7 @@ function renderLayers() {
       getTimestamps: d => d.timestamps,
       getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
       opacity: 1.0,
-      widthMinPixels: 4,
+      widthMinPixels: 10,
       rounded: true,
       trailLength: 180,
       currentTime: (Date.now() % 10000) / 10,
@@ -55,13 +55,19 @@ loadArcGISModules([
       atmosphereEnabled: false
     },
     camera: {
-      position: {
-        x: -74.56913418106207,
-        y: 34.67944198112559,
-        z: 306584.13835269737
-      },
+      // position: {
+      //   x: -74.56913418106207,
+      //   y: 34.67944198112559,
+      //   z: 306584.13835269737
+      // },
+      // tilt: 78.00556355941576,
 
-      tilt: 78.00556355941576,
+      position: {
+        longitude: -74.0060,
+        latitude: 40.7128,
+        z: 10000
+      },
+      tilt: 0,
 
       heading: 348.0400537930362
     },
