@@ -30,6 +30,8 @@ loadArcGISModules([
 ]).then(({DeckLayer, DeckRenderer, modules}) => {
   const [ArcGISMap, MapView, SceneView, externalRenderers] = modules;
 
+  // window.position = [0, 0, 5500];
+
   const layer = new DeckLayer({});
 
   // In the ArcGIS API for JavaScript the MapView is responsible
