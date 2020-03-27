@@ -71,7 +71,8 @@ loadArcGISModules([
       },
       tilt: 0,
 
-      heading: 348.0400537930362
+      heading: 0
+      // heading: 348.0400537930362
     },
     viewingMode: 'local'
   });

@@ -2,6 +2,7 @@
 
 import {Deck} from '@deck.gl/core';
 import {Model, Buffer, Framebuffer, instrumentGLContext, withParameters} from '@luma.gl/core';
+import {FirstPersonView} from '@deck.gl/core';
 
 export function initializeResources(gl) {
   instrumentGLContext(gl);
@@ -59,7 +60,7 @@ export function initializeResources(gl) {
   });
 }
 
-export function render({gl, width, height, viewState}) {
+export function render({gl, width, height, fovy, viewState}) {
   const screenFbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
   /* global window */
@@ -68,8 +69,11 @@ export function render({gl, width, height, viewState}) {
   height = Math.round(height * dpr);
 
   this.deckFbo.resize({width, height});
-
-  this.deckInstance.setProps({viewState});
+  this.deckInstance.setProps({
+    views: new FirstPersonView({x: 0, y: 0, width, height, near: 100, far: 1000000, fovy}),
+    viewState
+  });
+  
   // redraw deck immediately into deckFbo
   this.deckInstance.redraw('arcgis');
 

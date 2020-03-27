@@ -1,7 +1,6 @@
 /* eslint-disable no-invalid-this */
 
 import {initializeResources, render, finalizeResources} from './commons';
-import { FirstPersonView } from '@deck.gl/core';
 
 export default function createDeckRenderer(DeckProps, externalRenderers) {
   class DeckRenderer {
@@ -30,31 +29,21 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     render(context) {
       const [width, height] = this.view.size;
 
-      this.deckInstance.setProps({
-        // views: new FirstPersonView({x: 0, y: 0, width, height, near: 100, far: 1000000, fovy: this.view.camera.fov})
-        views: new FirstPersonView({x: 0, y: 0, width, height, near: 100, far: 1000000, fovy: this.view.camera.fov})
-      });
-
-      if (typeof this.view.camera.position.latitude === "undefined") {
-        return;
-      }
-
-      window.esriPosition = [this.view.camera.position.x, this.view.camera.position.y, this.view.camera.position.z];
+      const tiltRads = Math.PI * this.view.camera.tilt / 180;
+      // const ct = Math.cos(tiltRads);
+      // const st = Math.sin(tiltRads);
+      const h = this.view.camera.position.z;
 
       render.call(this, {
         gl: context.gl,
         width,
         height,
+        // fovy: (window.fovm || 0.415) * this.view.camera.fov,
+        fovy: this.view.camera.fov,
         viewState: {
           latitude: this.view.camera.position.latitude,
           longitude: this.view.camera.position.longitude,
-
-          // latitude: this.view.center.latitude,
-          // longitude: this.view.center.longitude,
-
-          position: [0, 0, this.view.camera.position.z],
-          // position: [0, 0, this.view.camera.position.z + (window["zoffset"] || 0)],
-          // position: window.position || [0, 0, 0],
+          position: [0, 0, h],
           bearing: this.view.camera.heading,
           pitch: 90 - this.view.camera.tilt
         }
