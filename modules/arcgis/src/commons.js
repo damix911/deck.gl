@@ -1,9 +1,9 @@
 /* eslint-disable no-invalid-this */
 
-import {Deck} from '@deck.gl/core';
+import {Deck, MapView, FirstPersonView} from '@deck.gl/core';
 import {Model, Buffer, Framebuffer, instrumentGLContext, withParameters} from '@luma.gl/core';
 
-export function initializeResources(gl) {
+export function initializeResources(gl, is3D) {
   instrumentGLContext(gl);
 
   this.buffer = new Buffer(gl, new Int8Array([-1, -1, 1, -1, -1, 1, 1, 1]));
@@ -37,6 +37,13 @@ export function initializeResources(gl) {
   this.deckFbo = new Framebuffer(gl, {width: 1, height: 1});
 
   this.deckInstance = new Deck({
+    views: [is3D ? new FirstPersonView({ near: 1, far: 10000 }) : new MapView()],
+
+    initialViewState: {
+      latitude: 0,
+      longitude: 0
+    },
+
     // The view state will be set dynamically to track the MapView current extent.
     viewState: {},
 
@@ -63,6 +70,28 @@ export function initializeResources(gl) {
     }
   });
 }
+
+// export function getArcGISFov(deckInstance) {
+//   if (!deckInstance) {
+//     return 35;
+//   }
+
+//   const viewManager = deckInstance && deckInstance.viewManager;
+
+//   if (!viewManager) {
+//     return 35;
+//   }
+
+//   const view0 = viewManager && viewManager.views[0];
+
+//   if (!view0) {
+//     return 35;
+//   }
+  
+//   const fovy = view0.props.fovy;
+
+//   return fovy;
+// }
 
 export function render({gl, width, height, viewState}) {
   const screenFbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);

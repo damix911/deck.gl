@@ -14,7 +14,7 @@ export default function createDeckLayerView2D(BaseLayerViewGL2D) {
       // We use a full-screen quad and shaders to composite the frame rendered
       // with deck.gl on top of the MapView. Composition uses the MapView context.
       const gl = this.context;
-      initializeResources.call(this, gl);
+      initializeResources.call(this, gl, false);
 
       // Update deck props
       this.layer.deck.on('change', props => this.deckInstance.setProps(props));

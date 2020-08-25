@@ -39,7 +39,7 @@ loadArcGISModules([
     container: 'mapViewDiv',
     map: new ArcGISMap({
       basemap: 'dark-gray-vector',
-      layers: [layer]
+      // layers: [layer]
     }),
     center: [-74, 40.72],
     zoom: 14
@@ -62,6 +62,14 @@ loadArcGISModules([
       },
 
       tilt: 0
+
+      // position: {
+      //   x: -74,
+      //   y: 40.60,
+      //   z: 5000
+      // },
+
+      // tilt: 65
     },
     viewingMode: 'local'
   });
