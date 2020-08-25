@@ -39,7 +39,7 @@ loadArcGISModules([
     container: 'mapViewDiv',
     map: new ArcGISMap({
       basemap: 'dark-gray-vector',
-      // layers: [layer]
+      layers: [layer]
     }),
     center: [-74, 40.72],
     zoom: 14
@@ -84,3 +84,44 @@ loadArcGISModules([
     renderer.deck.layers = renderLayers();
   }, 50);
 });
+
+
+/*
+import {Deck, FirstPersonView} from '@deck.gl/core';
+import {TripsLayer} from '@deck.gl/geo-layers';
+
+const DATA_URL =
+  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json';
+
+function renderLayers() {
+  return [
+    new TripsLayer({
+      id: 'trips',
+      data: DATA_URL,
+      getPath: d => d.path,
+      getTimestamps: d => d.timestamps,
+      getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
+      opacity: 1.0,
+      widthMinPixels: 4,
+      rounded: true,
+      trailLength: 180,
+      currentTime: (Date.now() % 10000) / 10,
+      shadowEnabled: false
+    })
+  ];
+}
+
+const INITIAL_VIEW_STATE = {
+  latitude: 40.65,
+  longitude: -74,
+  position: [0, 0, 5000],
+  zoom: 10,
+  pitch: 90
+};
+
+export const deck = new Deck({
+  initialViewState: INITIAL_VIEW_STATE,
+  views: [new FirstPersonView({ near: 1, far: 50000 })],
+  layers: renderLayers()
+});
+*/

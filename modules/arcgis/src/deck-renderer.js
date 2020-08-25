@@ -29,9 +29,13 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     render(context) {
       const [width, height] = this.view.size;
 
-      if (this.view.camera.position.latitude == null || this.view.camera.position.longitude == null) {
+      if (this.view.camera.position.latitude == null || this.view.camera.position.longitude == null || this.view.camera.fov == null) {
         return;
       }
+
+      const fov = Math.PI * this.view.camera.fov / 180;
+
+      const fovy = fov * 0.4; // TODO
 
       render.call(this, {
         gl: context.gl,
@@ -42,8 +46,9 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
           longitude: this.view.camera.position.longitude,
           position: [0, 0, this.view.camera.position.z],
           bearing: this.view.camera.heading,
-          pitch: 90//this.view.camera.tilt
-        }
+          pitch: 90 - this.view.camera.tilt
+        },
+        fovy: 180 * fovy / Math.PI
       });
     }
   }
