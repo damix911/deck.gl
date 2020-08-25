@@ -13,10 +13,10 @@ function renderLayers() {
       getTimestamps: d => d.timestamps,
       getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
       opacity: 1.0,
-      widthMinPixels: 4,
+      widthMinPixels: 5,
       rounded: true,
       trailLength: 180,
-      currentTime: (Date.now() % 10000) / 10,
+      currentTime: 500 + Math.random(),//(Date.now() % 10000) / 10,
       shadowEnabled: false
     })
   ];
@@ -58,10 +58,18 @@ loadArcGISModules([
       position: {
         x: -74,
         y: 40.65,
-        z: 5000
+        z: 2000
       },
 
-      tilt: 0
+      tilt: 30
+
+      // position: {
+      //   x: -74,
+      //   y: 40.65,
+      //   z: 5000
+      // },
+
+      // tilt: 0
 
       // position: {
       //   x: -74,

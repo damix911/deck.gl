@@ -33,9 +33,16 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
         return;
       }
 
+      // console.log(this.view.camera.position.latitude, this.view.center.latitude);
+      // console.log(this.view.camera.position.longitude, this.view.center.longitude);
+      
       const fov = Math.PI * this.view.camera.fov / 180;
 
-      const fovy = fov * 0.4; // TODO
+      const fovy = fov * (window["fovfix"] || 0.441);
+
+      // const co = Math.cos(Math.PI * this.view.camera.tilt / 180);
+      // const yfix = (-this.view.camera.position.z * (1 - co));
+      const yfix = 0;
 
       render.call(this, {
         gl: context.gl,
@@ -44,7 +51,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
         viewState: {
           latitude: this.view.camera.position.latitude,
           longitude: this.view.camera.position.longitude,
-          position: [0, 0, this.view.camera.position.z],
+          position: [window["xfix"] || 0, window["yfix"] || yfix, this.view.camera.position.z + (window["zfix"] || 0)],
           bearing: this.view.camera.heading,
           pitch: 90 - this.view.camera.tilt
         },
