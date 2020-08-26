@@ -39,6 +39,17 @@ export function initializeResources(gl, is3D) {
   this.deckInstance = new Deck({
     views: [is3D ? new FirstPersonView({ near: 1, far: 50000 }) : new MapView()],
 
+    // Seems like I need to specify an initial view state, or
+    // I get a byzantine @math.gl/web-mercator assertion failed
+    // once in a while.
+    initialViewState: {
+      latitude: 40.65,
+      longitude: -74,
+      position: [0, 0, 5000],
+      zoom: 0,
+      pitch: 90
+    },
+
     // Input is handled by the ArcGIS API for JavaScript.
     controller: false,
 
