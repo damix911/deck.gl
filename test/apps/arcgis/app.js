@@ -1,43 +1,23 @@
 import {loadArcGISModules} from '@deck.gl/arcgis';
-// import {TripsLayer} from '@deck.gl/geo-layers';
-import {ScatterplotLayer} from '@deck.gl/layers';
+import {TripsLayer} from '@deck.gl/geo-layers';
 
 const DATA_URL =
   'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json';
 
 function renderLayers() {
-  // return [
-  //   new TripsLayer({
-  //     id: 'trips',
-  //     data: DATA_URL,
-  //     getPath: d => d.path,
-  //     getTimestamps: d => d.timestamps,
-  //     getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
-  //     opacity: 1.0,
-  //     widthMinPixels: 5,
-  //     rounded: true,
-  //     trailLength: 180,
-  //     currentTime: 500 + Math.random(),//(Date.now() % 10000) / 10,
-  //     shadowEnabled: false
-  //   })
-  // ];
-
   return [
-    new ScatterplotLayer({
-      id: 'scatterplot-layer',
-      data: [{ coordinates: [-74, 40.72] }],
-      pickable: true,
-      opacity: 0.8,
-      stroked: true,
-      filled: true,
-      radiusScale: 16,
-      radiusMinPixels: 1,
-      radiusMaxPixels: 100,
-      lineWidthMinPixels: 1,
-      getPosition: d => d.coordinates,
-      getRadius: d => Math.sqrt(d.exits),
-      getFillColor: d => [255, 140, 0],
-      getLineColor: d => [0, 0, 0]
+    new TripsLayer({
+      id: 'trips',
+      data: DATA_URL,
+      getPath: d => d.path,
+      getTimestamps: d => d.timestamps,
+      getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
+      opacity: 1.0,
+      widthMinPixels: 4,
+      rounded: true,
+      trailLength: 180,
+      currentTime: (Date.now() % 10000) / 10,
+      shadowEnabled: false
     })
   ];
 }
@@ -77,28 +57,11 @@ loadArcGISModules([
     camera: {
       position: {
         x: -74,
-        // y: 40.65,
-        y: 40.72,
-        z: 2000
+        y: 40.65,
+        z: 5000
       },
 
       tilt: 0
-
-      // position: {
-      //   x: -74,
-      //   y: 40.65,
-      //   z: 5000
-      // },
-
-      // tilt: 0
-
-      // position: {
-      //   x: -74,
-      //   y: 40.60,
-      //   z: 5000
-      // },
-
-      // tilt: 65
     },
     viewingMode: 'local'
   });
@@ -113,44 +76,3 @@ loadArcGISModules([
     renderer.deck.layers = renderLayers();
   }, 50);
 });
-
-
-/*
-import {Deck, FirstPersonView} from '@deck.gl/core';
-import {TripsLayer} from '@deck.gl/geo-layers';
-
-const DATA_URL =
-  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json';
-
-function renderLayers() {
-  return [
-    new TripsLayer({
-      id: 'trips',
-      data: DATA_URL,
-      getPath: d => d.path,
-      getTimestamps: d => d.timestamps,
-      getColor: d => (d.vendor === 0 ? [253, 128, 93] : [23, 184, 190]),
-      opacity: 1.0,
-      widthMinPixels: 4,
-      rounded: true,
-      trailLength: 180,
-      currentTime: (Date.now() % 10000) / 10,
-      shadowEnabled: false
-    })
-  ];
-}
-
-const INITIAL_VIEW_STATE = {
-  latitude: 40.65,
-  longitude: -74,
-  position: [0, 0, 5000],
-  zoom: 10,
-  pitch: 90
-};
-
-export const deck = new Deck({
-  initialViewState: INITIAL_VIEW_STATE,
-  views: [new FirstPersonView({ near: 1, far: 50000 })],
-  layers: renderLayers()
-});
-*/
