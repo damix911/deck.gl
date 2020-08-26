@@ -2,6 +2,10 @@
 
 import {initializeResources, render, finalizeResources} from './commons';
 
+export function fovd2fovy(fovd, width, height) {
+  return 2.0 * Math.atan((height * Math.tan(fovd * 0.5)) / Math.sqrt(width * width + height * height));
+}
+
 export default function createDeckRenderer(DeckProps, externalRenderers) {
   class DeckRenderer {
     constructor(view, props) {
@@ -30,7 +34,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
       const [width, height] = this.view.size;
 
       const fov = Math.PI * this.view.camera.fov / 180;
-      const fovy = fov * (window["fovfix"] || 0.441);
+      const fovy = fovd2fovy(fov, this.view.width, this.view.height);
       
       const offset = this.view.camera.position.z * Math.tan(Math.PI * this.view.camera.tilt / 180);
       const co = Math.cos(Math.PI * this.view.camera.heading / 180);
