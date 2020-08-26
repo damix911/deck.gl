@@ -29,32 +29,23 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     render(context) {
       const [width, height] = this.view.size;
 
-      if (this.view.camera.position.latitude == null || this.view.camera.position.longitude == null || this.view.camera.fov == null) {
-        return;
-      }
-
-      // console.log(this.view.camera.position.latitude, this.view.center.latitude);
-      // console.log(this.view.camera.position.longitude, this.view.center.longitude);
-      
       const fov = Math.PI * this.view.camera.fov / 180;
-
       const fovy = fov * (window["fovfix"] || 0.441);
-      const d = this.view.camera.position.z * Math.tan(Math.PI * this.view.camera.tilt / 180);
+      
+      const offset = this.view.camera.position.z * Math.tan(Math.PI * this.view.camera.tilt / 180);
       const co = Math.cos(Math.PI * this.view.camera.heading / 180);
       const si = Math.sin(Math.PI * this.view.camera.heading / 180);
-      const x = 0;
-      const y = -d;
+      const xOffset = -si * offset;
+      const yOffset = -co * offset;
 
       render.call(this, {
         gl: context.gl,
         width,
         height,
         viewState: {
-          // latitude: this.view.camera.position.latitude,
-          // longitude: this.view.camera.position.longitude,
           latitude: this.view.center.latitude,
           longitude: this.view.center.longitude,
-          position: [x, y, this.view.camera.position.z],
+          position: [xOffset, yOffset, this.view.camera.position.z],
           bearing: this.view.camera.heading,
           pitch: 90 - this.view.camera.tilt
         },
