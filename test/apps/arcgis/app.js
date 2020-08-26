@@ -1,5 +1,6 @@
 import {loadArcGISModules} from '@deck.gl/arcgis';
 import {TripsLayer} from '@deck.gl/geo-layers';
+import {ScatterplotLayer} from '@deck.gl/layers';
 
 const DATA_URL =
   'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json';
@@ -18,6 +19,22 @@ function renderLayers() {
       trailLength: 180,
       currentTime: (Date.now() % 10000) / 10,
       shadowEnabled: false
+    }),
+    new ScatterplotLayer({
+      id: 'scatterplot-layer',
+      data: [{ coordinates: [-74, 40.72] }],
+      pickable: true,
+      opacity: 0.8,
+      stroked: true,
+      filled: true,
+      radiusScale: 16,
+      radiusMinPixels: 1,
+      radiusMaxPixels: 100,
+      lineWidthMinPixels: 1,
+      getPosition: d => d.coordinates,
+      getRadius: d => Math.sqrt(d.exits),
+      getFillColor: d => [255, 140, 0],
+      getLineColor: d => [0, 0, 0]
     })
   ];
 }
