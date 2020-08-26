@@ -37,18 +37,7 @@ export function initializeResources(gl, is3D) {
   this.deckFbo = new Framebuffer(gl, {width: 1, height: 1});
 
   this.deckInstance = new Deck({
-    views: [is3D ? new FirstPersonView({ near: 1, far: 10000/*, latitude: 40.65, longitude: -74*/ }) : new MapView()],
-
-    initialViewState: {
-      latitude: 40.65,
-      longitude: -74,
-      position: [0, 0, 5000],
-      zoom: 0,
-      pitch: 90
-    },
-
-    // The view state will be set dynamically to track the MapView current extent.
-    // viewState: {},
+    views: [is3D ? new FirstPersonView({ near: 1, far: 50000 }) : new MapView()],
 
     // Input is handled by the ArcGIS API for JavaScript.
     controller: false,
@@ -74,31 +63,10 @@ export function initializeResources(gl, is3D) {
   });
 }
 
-// export function getArcGISFov(deckInstance) {
-//   if (!deckInstance) {
-//     return 35;
-//   }
-
-//   const viewManager = deckInstance && deckInstance.viewManager;
-
-//   if (!viewManager) {
-//     return 35;
-//   }
-
-//   const view0 = viewManager && viewManager.views[0];
-
-//   if (!view0) {
-//     return 35;
-//   }
-  
-//   const fovy = view0.props.fovy;
-
-//   return fovy;
-// }
-
 export function render({gl, width, height, viewState, fovy}) {
   const screenFbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
+  // WIP!
   if (fovy != null && this.deckInstance.viewManager) {
     const viewManager = this.deckInstance.viewManager;
 
