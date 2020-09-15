@@ -50,7 +50,7 @@ import {EVENTS} from './constants';
 
 function noop() {}
 
-const getCursor = ({isDragging}) => (isDragging ? 'grabbing' : 'grab');
+const getCursor = ({isDragging}) => (isDragging ? 'grabbing' : 'inherit');
 
 function getPropTypes(PropTypes) {
   // Note: Arrays (layers, views, ) can contain falsy values

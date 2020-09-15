@@ -30,7 +30,9 @@ loadArcGISModules([
 ]).then(({DeckLayer, DeckRenderer, modules}) => {
   const [ArcGISMap, MapView, SceneView, externalRenderers] = modules;
 
-  const layer = new DeckLayer({});
+  const layer = new DeckLayer({
+    "deck.getCursor": () => "inherit"
+  });
 
   // In the ArcGIS API for JavaScript the MapView is responsible
   // for displaying a Map, which usually contains at least a basemap.
@@ -66,7 +68,9 @@ loadArcGISModules([
     viewingMode: 'local'
   });
 
-  const renderer = new DeckRenderer(sceneView, {});
+  const renderer = new DeckRenderer(sceneView, {
+    "getCursor": () => "inherit"
+  });
 
   externalRenderers.add(sceneView, renderer);
 
