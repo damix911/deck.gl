@@ -2,6 +2,10 @@ import {loadArcGISModules} from '@deck.gl/arcgis';
 import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {I3SLoader} from '@loaders.gl/i3s';
 
+const longitude = -122.4194;
+const latitude = 37.7749;
+const zoom = 14;
+
 loadArcGISModules(['esri/Map', 'esri/views/SceneView', 'esri/views/3d/externalRenderers']).then(
   ({DeckLayer, DeckRenderer, modules}) => {
     const [ArcGISMap, SceneView, externalRenderers] = modules;
@@ -17,12 +21,12 @@ loadArcGISModules(['esri/Map', 'esri/views/SceneView', 'esri/views/3d/externalRe
       },
       camera: {
         position: {
-          x: -122.4194,
-          y: 37.7749,
-          z: 200
+          x: longitude,
+          y: latitude,
+          z: 10000
         },
 
-        tilt: 40
+        // tilt: 40
       },
       viewingMode: 'local'
     });
