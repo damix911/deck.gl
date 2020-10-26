@@ -34,7 +34,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
       const [width, height] = this.view.size;
 
       const fov = Math.PI * this.view.camera.fov / 180;
-      const fovy = 0.76 * fovd2fovy(fov, this.view.width, this.view.height);
+      const fovy = fovd2fovy(fov, this.view.width, this.view.height);
       
       const offset = this.view.camera.position.z * Math.tan(Math.PI * this.view.camera.tilt / 180);
       const co = Math.cos(Math.PI * this.view.camera.heading / 180);
