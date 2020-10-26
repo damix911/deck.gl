@@ -3,14 +3,14 @@ import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {I3SLoader} from '@loaders.gl/i3s';
 
 // SF
-// const longitude = -122.4194;
-// const latitude = 37.7749;
-// const zoom = 14;
+const longitude = -122.4194;
+const latitude = 37.7749;
+const zoom = 14;
 
 // RC
-const longitude = -117.5931;
-const latitude = 34.1064;
-const zoom = 14;
+// const longitude = -117.5931;
+// const latitude = 34.1064;
+// const zoom = 14;
 
 loadArcGISModules(['esri/Map', 'esri/views/SceneView', 'esri/views/3d/externalRenderers']).then(
   ({DeckLayer, DeckRenderer, modules}) => {

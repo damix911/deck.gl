@@ -3,9 +3,13 @@ import {Deck} from '@deck.gl/core';
 import {Tile3DLayer} from '@deck.gl/geo-layers';
 import {I3SLoader} from '@loaders.gl/i3s';
 
-const longitude = -122.4194;
-const latitude = 37.7749;
-const zoom = 14;
+// const longitude = -122.4194;
+// const latitude = 37.7749;
+// const zoom = 14;
+
+const longitude = 0;
+const latitude = 0;
+const zoom = 19;
 
 const scatterplot = new ScatterplotLayer({
   id: 'scatterplot-layer',
@@ -28,8 +32,22 @@ const tiles = new Tile3DLayer({
   id: 'tile-3d-layer',
   // Tileset entry point: Indexed 3D layer file url
   data:
-    'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0',
-  loader: I3SLoader
+       `https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/Rancho_Mesh_mesh_v17_1/SceneServer/layers/0`,
+  // data:
+  //   'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/SanFrancisco_Bldgs/SceneServer/layers/0',
+  loader: I3SLoader,
+  onTilesetLoad: tileset => {
+    const { cartographicCenter } = tileset;
+    const [longitude, latitude] = cartographicCenter;
+    console.log("longitude, latitude", longitude, latitude);
+    deck.setProps({
+      viewState: {
+        longitude,
+        latitude,
+        zoom
+      }
+    });
+  }
 });
 
 const deck = new Deck({
