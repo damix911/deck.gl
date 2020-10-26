@@ -36,8 +36,10 @@ export function initializeResources(gl, is3D) {
 
   this.deckFbo = new Framebuffer(gl, {width: 1, height: 1});
 
+  this.deckView = is3D ? new FirstPersonView({ near: 1, far: 50000 }) : new MapView();
+
   this.deckInstance = new Deck({
-    views: [is3D ? new FirstPersonView({ near: 1, far: 50000 }) : new MapView()],
+    views: [this.deckView],
 
     // Seems like I need to specify an initial view state, or
     // I get a byzantine @math.gl/web-mercator assertion failed
@@ -77,19 +79,10 @@ export function initializeResources(gl, is3D) {
 export function render({gl, width, height, viewState, fovy}) {
   const screenFbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
-  // WIP!
-  if (fovy != null && this.deckInstance.viewManager) {
-    const viewManager = this.deckInstance.viewManager;
-
-    if (viewManager && viewManager.views && viewManager.views.length > 0) {
-      const view = this.deckInstance.viewManager.views[0];
-      
-      if (view instanceof FirstPersonView) {
-        this.deckInstance.setProps({
-          views: [new FirstPersonView({ near: 1, far: 10000, fovy })]
-        });
-      }
-    }
+  if (fovy != null && this.deckView instanceof FirstPersonView) {
+    this.deckInstance.setProps({
+      views: [new FirstPersonView({ near: 1, far: 10000, fovy })] // WIP!
+    });
   }
   
   /* global window */

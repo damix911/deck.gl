@@ -6,6 +6,18 @@ export function fovd2fovy(fovd, width, height) {
   return 2.0 * Math.atan((height * Math.tan(fovd * 0.5)) / Math.sqrt(width * width + height * height));
 }
 
+function getFOV(aspectRatio) {
+  const D = Math.sqrt(1 + aspectRatio ** 2);
+  const halfFOV = Math.atan(D / 2 / 1.5); // 1.5x height is deck.gl's default camera altitude
+  return halfFOV * 2 / Math.PI * 180;
+}
+
+function arcgisFOVToDeckAltitude(fov, aspectRatio) {
+  const D = Math.sqrt(1 + aspectRatio ** 2);
+  const halfFOV = fov / 2 / 180 * Math.PI;
+  return D / 2 / Math.tan(halfFOV);
+}
+
 export default function createDeckRenderer(DeckProps, externalRenderers) {
   class DeckRenderer {
     constructor(view, props) {
