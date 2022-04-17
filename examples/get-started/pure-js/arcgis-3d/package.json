@@ -1,0 +1,21 @@
+{
+  "name": "pure-js-esri-arcgis",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --progress --hot --open",
+    "start-local": "webpack-dev-server --env.local --progress --hot --open",
+    "build": "webpack -p"
+  },
+  "dependencies": {
+    "@arcgis/core": "^4.21.0",
+    "@deck.gl/arcgis": "^8.7.0-beta.6",
+    "@deck.gl/core": "^8.7.0-beta.6",
+    "@deck.gl/layers": "^8.7.0-beta.6"
+  },
+  "devDependencies": {
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
