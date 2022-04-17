@@ -49,9 +49,9 @@ export function initializeResources(gl) {
     },
 
     views: new FirstPersonView({
-      fovy: 75,
+      fovy: 25,
       near: 0.1,
-      far: 1000,
+      far: 10000,
       focalDistance: 1
     }),
 
@@ -94,7 +94,7 @@ export function render({gl, width, height, viewState}) {
   this.deckFbo.resize({width, height});
 
   // TODO! Re-enable this!
-  // this.deckInstance.setProps({viewState});
+  this.deckInstance.setProps({viewState});
 
   // redraw deck immediately into deckFbo
   this.deckInstance.redraw('arcgis');

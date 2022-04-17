@@ -10,8 +10,8 @@ const sceneView = new SceneView({
     basemap: 'dark-gray-vector'
   }),
   camera: {
-    position: {x: 0.119, y: -60, z: 10000000},
-    tilt: 60
+    position: {x: 0.119, y: 52.205, z: 100},
+    tilt: 0
   },
   viewingMode: 'local'
 });
