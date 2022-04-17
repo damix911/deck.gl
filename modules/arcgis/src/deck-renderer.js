@@ -36,7 +36,9 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     render(context) {
       const [width, height] = this.view.size;
 
-      console.log(this.view.camera.position.longitude, this.view.camera.position.latitude, this.view.camera.position.z, this.view.camera.tilt);
+      //console.log(this.view.camera.position.longitude, this.view.camera.position.latitude, this.view.center.longitude, this.view.center.latitude);
+      // console.log(this.view.camera.fov);
+      console.log(this.view.camera.position.z);
 
       render.call(this, {
         gl: context.gl,

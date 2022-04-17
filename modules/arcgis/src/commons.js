@@ -39,8 +39,8 @@ export function initializeResources(gl) {
   this.deckInstance = new Deck({
     // The view state will be set dynamically to track the MapView current extent.
     viewState: {
-      longitude: 0.119,
-      latitude: 52.205,
+      longitude: 0,
+      latitude: 0,
       position: [0, 0, 100],
       bearing: 0,
       pitch: 90,
@@ -49,7 +49,7 @@ export function initializeResources(gl) {
     },
 
     views: new FirstPersonView({
-      fovy: 25,
+      fovy: 20,
       near: 0.1,
       far: 10000,
       focalDistance: 1
