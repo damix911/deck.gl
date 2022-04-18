@@ -8,17 +8,16 @@
   integrity sha512-3JOd6g+BALysWS8LNf0qdB8ltR651H/RCLAvUmfS0LIHwHO579XfjZUIZbURYiAZrcbp1CBAq4QZ2YwKNQZ1hw==
 
 "@arcgis/core@^4.21.0":
-  version "4.21.2"
-  resolved "https://registry.yarnpkg.com/@arcgis/core/-/core-4.21.2.tgz#0fbfe17f981ff4247ac7770f8e662e716260b8bb"
-  integrity sha512-L3Rc84wOFsMcljrydVKc1jkgYQSO+ru4Kgr7tCsK+YLVGWNeggLRh2XeGNIuXOEklaMxdWIBZ+Kw9424K+JQyw==
+  version "4.23.7"
+  resolved "https://registry.yarnpkg.com/@arcgis/core/-/core-4.23.7.tgz#636cb40b2faff593d7e7cc81fbea0c28d46add08"
+  integrity sha512-xi3eBV513CmoHQ6F1OurEt71aBt4FzDOaOrPKzsFVJnq0LeDPKUHfsBs4E8BoGLSk5df+gDCZG+WHTmzxu8c0w==
   dependencies:
-    "@esri/arcgis-html-sanitizer" "~2.7.0"
+    "@esri/arcgis-html-sanitizer" "~2.9.0"
     "@esri/calcite-colors" "~6.0.1"
-    "@esri/calcite-components" "1.0.0-beta.62"
-    "@popperjs/core" "~2.9.3"
-    focus-trap "~6.6.1"
-    luxon "~2.0.2"
-    moment "~2.29.1"
+    "@esri/calcite-components" "1.0.0-beta.77"
+    "@popperjs/core" "~2.11.4"
+    focus-trap "~6.7.3"
+    luxon "~2.3.1"
     sortablejs "~1.14.0"
 
 "@babel/cli@^7.14.5":
@@ -1327,29 +1326,30 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@esri/arcgis-html-sanitizer@~2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@esri/arcgis-html-sanitizer/-/arcgis-html-sanitizer-2.7.0.tgz#ab30a2aba04f5f1b3d261acc070dfb3efd6d2bc5"
-  integrity sha512-T3D2Gn5n7Wsu3YmsPtw9F2HmxI2McebkYHOAo9D7HF6bHBcca0GpBsDaRgYTmQ68ABOsAIIvbFfBY6aDyyHYbw==
+"@esri/arcgis-html-sanitizer@~2.9.0":
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/@esri/arcgis-html-sanitizer/-/arcgis-html-sanitizer-2.9.0.tgz#2d58fd20323ee7950e1fb850ac80cbb9890568d8"
+  integrity sha512-kF5gfE2W16Nu/p4P69bsGmo7CKzKiTHlK3oWOqrDy/ptaMxEDCorHLm9UKULCA478xlOQM6lSnq4o3HYgST5Lw==
   dependencies:
     lodash.isplainobject "^4.0.6"
-    xss "^1.0.9"
+    xss "^1.0.10"
 
 "@esri/calcite-colors@~6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@esri/calcite-colors/-/calcite-colors-6.0.1.tgz#770ec4d77bbbd4da32a66450eb93f4c780c0ff28"
   integrity sha512-iGUIIpeMCJSTDGw4ZsxLwwxkml0QzOUJTtysjRryGbhSt183NEtwWKS+yQO19utXQz5LbQWjoav6x6CsawElkw==
 
-"@esri/calcite-components@1.0.0-beta.62":
-  version "1.0.0-beta.62"
-  resolved "https://registry.yarnpkg.com/@esri/calcite-components/-/calcite-components-1.0.0-beta.62.tgz#c284d3b979748a0f9279be39e40255d783a796bf"
-  integrity sha512-GCDIX6TKgjAc3MZ/nKZIheCEH2a1vsM+B1cldczEXgOqGeGP+sOgGuJRV6PzbpoYnvAvklsGpXjgVKNnkacIFw==
+"@esri/calcite-components@1.0.0-beta.77":
+  version "1.0.0-beta.77"
+  resolved "https://registry.yarnpkg.com/@esri/calcite-components/-/calcite-components-1.0.0-beta.77.tgz#cc13e81195af800472ed47744fb409cb9d872adf"
+  integrity sha512-fCE9ikXHzUQTHJSMXNYB1/WrPpKtQMUBbaypbbwwxM8y3ifavN0a5ns7NAC+W7uQJA+29fGpAlIMjXr/483eXw==
   dependencies:
     "@a11y/focus-trap" "1.0.5"
-    "@popperjs/core" "2.9.3"
-    "@stencil/core" "2.6.0"
-    "@types/color" "3.0.2"
-    color "4.0.1"
+    "@popperjs/core" "2.11.2"
+    "@stencil/core" "2.13.0"
+    "@types/color" "3.0.3"
+    color "4.2.0"
+    form-request-submit-polyfill "2.0.0"
     lodash-es "4.17.21"
     sortablejs "1.14.0"
 
@@ -2827,10 +2827,15 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@popperjs/core@2.9.3", "@popperjs/core@~2.9.3":
-  version "2.9.3"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.3.tgz#8b68da1ebd7fc603999cf6ebee34a4899a14b88e"
-  integrity sha512-xDu17cEfh7Kid/d95kB6tZsLOmSWKCZKtprnhVepjsSaCij+lM3mItSJDuuHDMbCWTh8Ejmebwb+KONcCJ0eXQ==
+"@popperjs/core@2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.2.tgz#830beaec4b4091a9e9398ac50f865ddea52186b9"
+  integrity sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==
+
+"@popperjs/core@~2.11.4":
+  version "2.11.5"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.5.tgz#db5a11bf66bdab39569719555b0f76e138d7bd64"
+  integrity sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw==
 
 "@probe.gl/bench@^3.5.0":
   version "3.5.0"
@@ -2879,10 +2884,10 @@
     pixelmatch "^4.0.2"
     puppeteer "*"
 
-"@stencil/core@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.6.0.tgz#29da96d8b6fc83e689b9f297ef3e8b59b90a676a"
-  integrity sha512-QsxWayZyusnqSZrlCl81R71rA3KqFjVVQSH4E0rGN15F1GdQaFonKlHLyCOLKLig1zzC+DQkLLiUuocexuvdeQ==
+"@stencil/core@2.13.0":
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.13.0.tgz#993fd74a5c7c8fe8af75848ca9df2211cd05b818"
+  integrity sha512-EEKHOHgYpg3/iFUKMXTZJjUayRul7sXDwNw0OGgkEOe4t7JWiibDkzUHuruvpbqEydX+z1+ez5K2bMMY76c2wA==
 
 "@types/backbone@^1.4.1":
   version "1.4.2"
@@ -2904,10 +2909,10 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
-"@types/color@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@types/color/-/color-3.0.2.tgz#3779043e782f562aa9157b5fc6bd07e14fd8e7f3"
-  integrity sha512-INiJl6sfNn8iyC5paxVzqiVUEj2boIlFki02uRTAkKwAj++7aAF+ZfEv/XrIeBa0XI/fTZuDHW8rEEcEVnON+Q==
+"@types/color@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-3.0.3.tgz#e6d8d72b7aaef4bb9fe80847c26c7c786191016d"
+  integrity sha512-X//qzJ3d3Zj82J9sC/C18ZY5f43utPbAJ6PhYt/M7uG6etcF6MRpKdN880KBy43B0BMzSfeT96MzrsNjFI3GbA==
   dependencies:
     "@types/color-convert" "*"
 
@@ -4463,9 +4468,9 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001254:
-  version "1.0.30001283"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001283.tgz"
-  integrity sha512-9RoKo841j1GQFSJz/nCXOj0sD7tHBtlowjYlrqIUS812x9/emfBLBt6IyMz1zIaYc/eRL8Cs6HPUVi2Hzq4sIg==
+  version "1.0.30001332"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001332.tgz"
+  integrity sha512-10T30NYOEQtN6C11YGg411yebhvpnC6Z102+B95eAsN0oB6KUs01ivE8u+G6FMIRtIrVlYXhL+LUwQ3/hXwDWw==
 
 canvas@^2.6.0:
   version "2.6.1"
@@ -4714,21 +4719,21 @@ color-name@^1.0.0, color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-color-string@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.6.0.tgz#c3915f61fe267672cb7e1e064c9d692219f6c312"
-  integrity sha512-c/hGS+kRWJutUBEngKKmk4iH3sD59MBkoxVapS/0wgpCz2u7XsNloxknyvBhzwEs1IbV36D9PwqLPJ2DTu3vMA==
+color-string@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.9.0.tgz#63b6ebd1bec11999d1df3a79a7569451ac2be8aa"
+  integrity sha512-9Mrz2AQLefkH1UvASKj6v6hj/7eWgjnT/cVsR8CumieLoT+g900exWeNogqtweI8dxloXN9BDQTYro1oWu/5CQ==
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/color/-/color-4.0.1.tgz#21df44cd10245a91b1ccf5ba031609b0e10e7d67"
-  integrity sha512-rpZjOKN5O7naJxkH2Rx1sZzzBgaiWECc6BYXjeCE6kF0kcASJYbUq02u7JqIHwCb/j3NhV+QhRL2683aICeGZA==
+color@4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/color/-/color-4.2.0.tgz#0c782459a3e98838ea01e4bc0fb43310ca35af78"
+  integrity sha512-hHTcrbvEnGjC7WBMk6ibQWFVDgEFTVmjrz2Q5HlU6ltwxv0JJN2Z8I7uRbWeQLF04dikxs8zgyZkazRJvSMtyQ==
   dependencies:
     color-convert "^2.0.1"
-    color-string "^1.6.0"
+    color-string "^1.9.0"
 
 colorbrewer@1.0.0:
   version "1.0.0"
@@ -6701,10 +6706,10 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-focus-trap@~6.6.1:
-  version "6.6.1"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.6.1.tgz#761ce2c82ddd72beeb049e968bc8414e25b704aa"
-  integrity sha512-x9BWuAeF5UrfWuYKJ3jYrjcVYSYptS9CqtxH5IH7lPlZrMsaugKeAa0HtoZSBZe5DmeTMx2m0qY464ZMzqarzw==
+focus-trap@~6.7.3:
+  version "6.7.3"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.7.3.tgz#b5dc195b49c90001f08a63134471d1e6dd381ddd"
+  integrity sha512-8xCEKndV4KrseGhFKKKmczVA14yx1/hnmFICPOjcFjToxCJYj/NHH43tPc3YE/PLnLRNZoFug0EcWkGQde/miQ==
   dependencies:
     tabbable "^5.2.1"
 
@@ -6746,6 +6751,11 @@ form-data@~2.3.2:
     asynckit "^0.4.0"
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
+
+form-request-submit-polyfill@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/form-request-submit-polyfill/-/form-request-submit-polyfill-2.0.0.tgz#2557c9c2385989954461e327e81619993b5bce96"
+  integrity sha512-p0+M92y2gFnP0AuuL8VJ0GYVzAT0bYp3GsSkmPFhvUopdnfDLP/9xplQTBBc4w8qOjKRzdK7GaFcdL9IhlXdTQ==
 
 forwarded@~0.1.2:
   version "0.1.2"
@@ -8810,10 +8820,10 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-luxon@~2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.0.2.tgz#11f2cd4a11655fdf92e076b5782d7ede5bcdd133"
-  integrity sha512-ZRioYLCgRHrtTORaZX1mx+jtxKtKuI5ZDvHNAmqpUzGqSrR+tL4FVLn/CUGMA3h0+AKD1MAxGI5GnCqR5txNqg==
+luxon@~2.3.1:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.3.2.tgz#5f2f3002b8c39b60a7b7ad24b2a85d90dc5db49c"
+  integrity sha512-MlAQQVMFhGk4WUA6gpfsy0QycnKP0+NlCBJRVRNPxxSIbjrCbQ65nrpJD3FVyJNZLuJ0uoqL57ye6BmDYgHaSw==
 
 macos-release@^2.2.0:
   version "2.3.0"
@@ -9305,7 +9315,7 @@ moment-timezone@^0.5.33:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@~2.29.1:
+"moment@>= 2.9.0":
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
@@ -13515,10 +13525,10 @@ xmlchars@^2.1.1:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xss@^1.0.9:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.10.tgz#5cd63a9b147a755a14cb0455c7db8866120eb4d2"
-  integrity sha512-qmoqrRksmzqSKvgqzN0055UFWY7OKx1/9JWeRswwEVX9fCG5jcYRxa/A2DHcmZX6VJvjzHRQ2STeeVcQkrmLSw==
+xss@^1.0.10:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.11.tgz#211cb82e95b5071d4c75d597283c021157ebe46a"
+  integrity sha512-EimjrjThZeK2MO7WKR9mN5ZC1CSqivSl55wvUK5EtU6acf0rzEE1pN+9ZDrFXJ82BRp3JL38pPE6S4o/rpp1zQ==
   dependencies:
     commander "^2.20.3"
     cssfilter "0.0.10"
