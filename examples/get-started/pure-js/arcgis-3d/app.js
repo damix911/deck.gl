@@ -4,19 +4,31 @@ import ArcGISMap from '@arcgis/core/Map';
 import SceneView from '@arcgis/core/views/SceneView';
 import * as externalRenderers from '@arcgis/core/views/3d/externalRenderers';
 
-const sceneView = new SceneView({
+const view = new SceneView({
   container: 'viewDiv',
   map: new ArcGISMap({
     basemap: 'dark-gray-vector'
   }),
   camera: {
-    position: {x: 0.119, y: 52.2055, z: 500},
-    tilt: 0
+    // position: {x: 0.119, y: 52.2055, z: 500},
+    // tilt: 0,
+
+    position: {x: 0.119, y: 52.2045, z: 500},
+    tilt: 20
+
+    // position: {x: -77.0365, y: 38.8977, z: 500 },
+    // tilt: 20
   },
   viewingMode: 'local'
 });
 
-const renderer = new DeckRenderer(sceneView, {
+// setTimeout(() => {
+//   view.goTo({
+//     tilt: view.camera.tilt - 10
+//   });
+// }, 5000);
+
+const renderer = new DeckRenderer(view, {
   layers: [
     new ScatterplotLayer({
       data: [
@@ -38,4 +50,4 @@ const renderer = new DeckRenderer(sceneView, {
   ]
 });
 
-externalRenderers.add(sceneView, renderer);
+externalRenderers.add(view, renderer);

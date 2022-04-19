@@ -48,12 +48,12 @@ export function initializeResources(gl) {
       minPitch: -90
     },
 
-    views: new FirstPersonView({
-      fovy: 20,
-      near: 0.1,
-      far: 10000,
-      focalDistance: 1
-    }),
+    // views: new FirstPersonView({
+    //   fovy: 30,
+    //   near: 0.1,
+    //   far: 10000,
+    //   focalDistance: 1
+    // }),
 
     // Input is handled by the ArcGIS API for JavaScript.
     controller: false,
@@ -95,6 +95,17 @@ export function render({gl, width, height, viewState}) {
 
   // TODO! Re-enable this!
   this.deckInstance.setProps({viewState});
+
+  console.log("CIAO");
+
+  // this.deckInstance.setProps({
+  //   views: [new FirstPersonView({
+  //     fovy: 30 + 10 * Math.cos(performance.now() / 1000),
+  //     near: 0.1,
+  //     far: 10000,
+  //     focalDistance: 1
+  //   })]
+  // });
 
   // redraw deck immediately into deckFbo
   this.deckInstance.redraw('arcgis');
