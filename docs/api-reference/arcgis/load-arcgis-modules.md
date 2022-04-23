@@ -7,7 +7,7 @@ This utility function initializes the classes in this module by loading ArcGIS d
 ```js
 import {loadArcGISModules} from '@deck.gl/arcgis';
 
-loadArcGISModules(['esri/Map', 'esri/views/MapView'], {version: '4.21'})
+loadArcGISModules(['esri/Map', 'esri/views/MapView'], {version: '4.23'})
   .then(({DeckLayer, DeckRenderer, modules}) => {
     const [ArcGISMap, MapView] = modules;
 

@@ -8,7 +8,7 @@
     "build": "webpack -p"
   },
   "dependencies": {
-    "@arcgis/core": "^4.21.0",
+    "@arcgis/core": "^4.23.0",
     "@deck.gl/arcgis": "^8.7.0-beta.6",
     "@deck.gl/core": "^8.7.0-beta.6",
     "@deck.gl/layers": "^8.7.0-beta.6"

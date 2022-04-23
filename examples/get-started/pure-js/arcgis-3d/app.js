@@ -10,23 +10,11 @@ const view = new SceneView({
     basemap: 'dark-gray-vector'
   }),
   camera: {
-    // position: {x: 0.119, y: 52.2055, z: 500},
-    // tilt: 0,
-
     position: {x: 0.119, y: 52.2045, z: 500},
     tilt: 20
-
-    // position: {x: -77.0365, y: 38.8977, z: 500 },
-    // tilt: 20
   },
   viewingMode: 'local'
 });
-
-// setTimeout(() => {
-//   view.goTo({
-//     tilt: view.camera.tilt - 10
-//   });
-// }, 5000);
 
 const renderer = new DeckRenderer(view, {
   layers: [

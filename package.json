@@ -51,7 +51,7 @@
     "jsdom": false
   },
   "devDependencies": {
-    "@arcgis/core": "^4.21.0",
+    "@arcgis/core": "^4.23.0",
     "@babel/register": "^7.13.0",
     "@loaders.gl/csv": "^3.2.0-alpha.2",
     "@loaders.gl/polyfills": "^3.2.0-alpha.2",
