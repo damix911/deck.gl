@@ -1,6 +1,6 @@
 /* eslint-disable no-invalid-this */
 
-import {Deck, FirstPersonView} from '@deck.gl/core';
+import {Deck} from '@deck.gl/core';
 import {Model, Buffer, Framebuffer, instrumentGLContext, withParameters} from '@luma.gl/core';
 
 export function initializeResources(gl) {
@@ -37,6 +37,9 @@ export function initializeResources(gl) {
   this.deckFbo = new Framebuffer(gl, {width: 1, height: 1});
 
   this.deckInstance = new Deck({
+    // The view state will be set dynamically to track the MapView current extent.
+    viewState: {},
+
     // Input is handled by the ArcGIS API for JavaScript.
     controller: false,
 
@@ -74,8 +77,8 @@ export function render({gl, width, height, viewState}) {
   height = Math.round(height * dpr);
 
   this.deckFbo.resize({width, height});
-  this.deckInstance.setProps({viewState});
 
+  this.deckInstance.setProps({viewState});
   // redraw deck immediately into deckFbo
   this.deckInstance.redraw('arcgis');
 
