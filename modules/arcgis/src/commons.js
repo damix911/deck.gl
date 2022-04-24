@@ -37,24 +37,6 @@ export function initializeResources(gl) {
   this.deckFbo = new Framebuffer(gl, {width: 1, height: 1});
 
   this.deckInstance = new Deck({
-    // The view state will be set dynamically to track the MapView current extent.
-    viewState: {
-      longitude: 0,
-      latitude: 0,
-      position: [0, 0, 100],
-      bearing: 0,
-      pitch: 90,
-      maxPitch: 90,
-      minPitch: -90
-    },
-
-    // views: new FirstPersonView({
-    //   fovy: 30,
-    //   near: 0.1,
-    //   far: 10000,
-    //   focalDistance: 1
-    // }),
-
     // Input is handled by the ArcGIS API for JavaScript.
     controller: false,
 
@@ -92,20 +74,7 @@ export function render({gl, width, height, viewState}) {
   height = Math.round(height * dpr);
 
   this.deckFbo.resize({width, height});
-
-  // TODO! Re-enable this!
   this.deckInstance.setProps({viewState});
-
-  console.log("CIAO", JSON.stringify(viewState));
-
-  // this.deckInstance.setProps({
-  //   views: [new FirstPersonView({
-  //     fovy: 30 + 10 * Math.cos(performance.now() / 1000),
-  //     near: 0.1,
-  //     far: 10000,
-  //     focalDistance: 1
-  //   })]
-  // });
 
   // redraw deck immediately into deckFbo
   this.deckInstance.redraw('arcgis');
