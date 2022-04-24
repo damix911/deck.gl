@@ -1,39 +1,52 @@
 import {DeckRenderer} from '@deck.gl/arcgis';
-import {ScatterplotLayer} from '@deck.gl/layers';
 import ArcGISMap from '@arcgis/core/Map';
 import SceneView from '@arcgis/core/views/SceneView';
 import * as externalRenderers from '@arcgis/core/views/3d/externalRenderers';
+import { GeoJsonLayer, ArcLayer } from '@deck.gl/layers';
+
+// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
+const AIR_PORTS =
+  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
 
 const view = new SceneView({
   container: 'viewDiv',
   map: new ArcGISMap({
     basemap: 'dark-gray-vector'
   }),
-  camera: {
-    position: {x: 0.119, y: 52.2045, z: 500},
-    tilt: 20
-  },
+  center: [0.119167, 52.205276],
+  zoom: 5,
   viewingMode: 'local'
 });
 
 const renderer = new DeckRenderer(view, {
   layers: [
-    new ScatterplotLayer({
-      data: [
-        { position: [0.118747, 52.205150] },
-        { position: [0.118835, 52.205081] },
-        { position: [0.119417, 52.205121] },
-        { position: [0.119441, 52.205167] },
-        { position: [0.119348, 52.205665] },
-        { position: [0.119213, 52.205752] },
-        { position: [0.118921, 52.205620] },
-        { position: [0.118709, 52.205559] },
-        { position: [0.118696, 52.205500] },
-        { position: [0.118752, 52.205160] }
-      ],
-      getPosition: d => d.position,
-      getColor: [255, 0, 0],
-      radiusMinPixels: 2
+    new GeoJsonLayer({
+      id: 'airports',
+      data: AIR_PORTS,
+      // Styles
+      filled: true,
+      pointRadiusMinPixels: 2,
+      pointRadiusScale: 2000,
+      getPointRadius: f => 11 - f.properties.scalerank,
+      getFillColor: [200, 0, 80, 180],
+      // Interactive props
+      pickable: true,
+      autoHighlight: true,
+      onClick: info =>
+        info.object &&
+        // eslint-disable-next-line
+        alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
+    }),
+    new ArcLayer({
+      id: 'arcs',
+      data: AIR_PORTS,
+      dataTransform: d => d.features.filter(f => f.properties.scalerank < 4),
+      // Styles
+      getSourcePosition: f => [-0.4531566, 51.4709959], // London
+      getTargetPosition: f => f.geometry.coordinates,
+      getSourceColor: [0, 128, 200],
+      getTargetColor: [200, 0, 80],
+      getWidth: 1
     })
   ]
 });

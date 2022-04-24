@@ -36,49 +36,20 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     render(context) {
       const [width, height] = this.view.size;
 
-      console.log(this.view.camera.position.longitude, this.view.camera.position.latitude, this.view.center.longitude, this.view.center.latitude);
-      // console.log(this.view.camera.fov);
-      console.log("this.view.camera.position.z", this.view.camera.position.z);
-
-      const altitude = arcgisFOVToDeckAltitude(this.view.camera.fov, width / height);
-
-      console.log("altitude", altitude);
-
       render.call(this, {
         gl: context.gl,
         width,
         height,
         viewState: {
-
-
-          // longitude: this.view.center.longitude,
-          // latitude: this.view.center.latitude,
-          // longitude: 0.119,
-          // latitude: 52.205,
-
-
-
-          
-          // longitude: this.view.camera.position.longitude,
-          // latitude: this.view.camera.position.latitude,
-          // position: [0, 0, this.view.camera.position.z],
-          // bearing: this.view.camera.heading,
-          // pitch: 90 - this.view.camera.tilt,
-          // maxPitch: 90,
-          // minPitch: -90
-
-
-          
-
           latitude: this.view.center.latitude,
           longitude: this.view.center.longitude,
-          altitude,
+          altitude: arcgisFOVToDeckAltitude(this.view.camera.fov, width / height),
           zoom: this.view.zoom,
           bearing: this.view.camera.heading,
-          pitch: this.view.camera.tilt,
+          pitch: Math.min(Math.max(this.view.camera.tilt, -90), 90),
           minZoom: 0,
           maxZoom: 100,
-          minPitch: 0,
+          minPitch: -90,
           maxPitch: 90
         }
       });

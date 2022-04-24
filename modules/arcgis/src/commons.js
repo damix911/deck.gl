@@ -96,7 +96,7 @@ export function render({gl, width, height, viewState}) {
   // TODO! Re-enable this!
   this.deckInstance.setProps({viewState});
 
-  console.log("CIAO");
+  console.log("CIAO", JSON.stringify(viewState));
 
   // this.deckInstance.setProps({
   //   views: [new FirstPersonView({
