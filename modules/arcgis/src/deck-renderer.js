@@ -14,6 +14,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
     constructor(view, props) {
       this.view = view;
       this.deck = new DeckProps(props);
+      this.scaleFactor = props.scaleFactor || 1;
     }
 
     setup(context) {
@@ -44,7 +45,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
           latitude: this.view.center.latitude,
           longitude: this.view.center.longitude,
           altitude: arcgisFOVToDeckAltitude(this.view.camera.fov, width / height),
-          zoom: this.view.basemapTerrain.tilingScheme.levelAtScale(this.view.scale),
+          zoom: this.view.basemapTerrain.tilingScheme.levelAtScale(this.view.scale * this.scaleFactor),
           bearing: this.view.camera.heading,
           pitch: this.view.camera.tilt
         }
