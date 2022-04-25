@@ -35,7 +35,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
 
     render(context) {
       const [width, height] = this.view.size;
-
+      
       render.call(this, {
         gl: context.gl,
         width,
@@ -44,7 +44,7 @@ export default function createDeckRenderer(DeckProps, externalRenderers) {
           latitude: this.view.center.latitude,
           longitude: this.view.center.longitude,
           altitude: arcgisFOVToDeckAltitude(this.view.camera.fov, width / height),
-          zoom: this.view.zoom,
+          zoom: this.view.basemapTerrain.tilingScheme.levelAtScale(this.view.scale),
           bearing: this.view.camera.heading,
           pitch: this.view.camera.tilt
         }
