@@ -17,6 +17,18 @@ export default function createDeckLayerView2D(BaseLayerViewGL2D) {
       // with deck.gl on top of the MapView. Composition uses the MapView context.
       const gl = this.context;
 
+      // const bc = gl.blendColor.bind(gl);
+      // gl.blendColor = (r, g, b, a) => {
+      //   console.log("BLEND COLOR", r, g, b, a)
+      //   bc(r, g, b, a);
+      // };
+
+      // const bindFramebuffer_OLD = gl.bindFramebuffer.bind(gl);
+      // gl.bindFramebuffer = (a, b) => {
+      //   console.log("bindFramebuffer", a, b)
+      //   bindFramebuffer_OLD(a, b);
+      // };
+
       let cancelled = false;
       this.cancelInitialization = () => (cancelled = true);
       const resources = await initializeResources.call(this, gl);
@@ -56,6 +68,7 @@ export default function createDeckLayerView2D(BaseLayerViewGL2D) {
       const [width, height] = this.view.state.size;
       // The view state must be kept in-sync with the MapView of the ArcGIS API.
       const state = renderParameters.state;
+      renderParameters.context.blendColor(1, 1, 1, 1);
 
       render(this.resources, {
         width,

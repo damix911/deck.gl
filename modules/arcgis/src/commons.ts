@@ -9,6 +9,7 @@ import type {Device, Texture, Framebuffer} from '@luma.gl/core';
 import {Deck} from '@deck.gl/core';
 import {Model, Geometry} from '@luma.gl/engine';
 import {WebGLDevice} from '@luma.gl/webgl';
+import { GlueWEBGLFramebuffer } from './glue';
 
 interface Renderer {
   redraw: () => void;
@@ -57,14 +58,49 @@ export async function initializeResources(
 
   const texture = device.createTexture({
     format: 'rgba8unorm',
-    width: 1,
-    height: 1,
+    width: 1000,
+    height: 600,
     sampler: {
       minFilter: 'linear',
       magFilter: 'linear',
       addressModeU: 'clamp-to-edge',
-      addressModeV: 'clamp-to-edge'
+      addressModeV: 'clamp-to-edge',
+      mipmapFilter: "none",
     }
+  });
+
+  // const texture2 = device.createTexture({
+  //   format: 'rgba8unorm',
+  //   width: 128,
+  //   height: 128,
+  //   sampler: {
+  //     minFilter: 'linear',
+  //     magFilter: 'linear',
+  //     addressModeU: 'clamp-to-edge',
+  //     addressModeV: 'clamp-to-edge',
+  //     mipmapFilter: "none",
+  //   }
+  // });
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 1000;
+  canvas.height = 600;
+  const ctx = canvas.getContext("2d")!;
+  ctx.font = "100px sans-serif";
+  ctx.fillStyle = "blue";
+  ctx.fillRect(20, 20, 1000 - 40, 600 - 40);
+  ctx.fillStyle = "red";
+  ctx.fillText(":-)", 500, 300);
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.strokeText(":-)", 500, 300);
+
+  // texture2.copyExternalImage({
+  //   image: canvas,
+  // });
+
+  texture.copyExternalImage({
+    image: canvas,
   });
 
   const model = new Model(device, {
@@ -86,7 +122,10 @@ out vec4 fragColor;
 
 void main(void) {
     vec4 imageColor = texture(deckglTexture, v_texcoord);
+    imageColor.a *= 0.4;
     imageColor.rgb *= imageColor.a;
+    // imageColor = vec4(v_texcoord, 0.0, 1.0);
+    // imageColor *= 100.0;
     fragColor = imageColor;
 }
     `,
@@ -101,10 +140,11 @@ void main(void) {
       blendAlphaSrcFactor: 'one',
       blendAlphaDstFactor: 'one-minus-src-alpha',
       blendColorOperation: 'add',
-      blendAlphaOperation: 'add'
+      blendAlphaOperation: 'add',
+      blend: true,
     },
     geometry: new Geometry({
-      topology: 'triangle-strip',
+      topology: 'triangle-list',
       attributes: {
         pos: {size: 2, value: new Int8Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, 1, 1, -1])}
       }
@@ -115,8 +155,8 @@ void main(void) {
 
   const fbo = device.createFramebuffer({
     id: 'deckfbo',
-    width: 1,
-    height: 1,
+    width: 1000,
+    height: 600,
     colorAttachments: [texture],
     depthStencilAttachment: 'depth16unorm'
   });
@@ -153,8 +193,11 @@ export function render(
   const {model, deck, fbo} = resources;
   const device = model.device;
   if (device instanceof WebGLDevice) {
-    // @ts-ignore device.getParametersWebGL should return `any` not `void`?
-    const screenFbo: Framebuffer = device.getParametersWebGL(GL.FRAMEBUFFER_BINDING);
+    // device.gl.blendColor(1, 1, 1, 1);
+    const handle = device.getParametersWebGL(GL.FRAMEBUFFER_BINDING);
+    const screenFbo = new GlueWEBGLFramebuffer(device, {
+      handle,
+    });
     const {width, height, ...viewState} = viewport;
 
     /* global window */
@@ -171,13 +214,36 @@ export function render(
     // We overlay the texture on top of the map using the full-screen quad.
 
     const textureToScreenPass = device.beginRenderPass({
-      framebuffer: screenFbo,
+      framebuffer: screenFbo as any as Framebuffer,
       parameters: {viewport: [0, 0, pixelWidth, pixelHeight]},
       clearColor: false,
       clearDepth: false
     });
     try {
+      device.gl.blendColor(1, 1, 1, 1);
       model.draw(textureToScreenPass);
+
+      // const { gl } = device;
+      // const pixels = new Uint8Array(width * height * 4); // 4 components (R, G, B, A) per pixel
+      // gl.readPixels(
+      //     0,                                  // x
+      //     0,                                  // y
+      //     width,                              // width
+      //     height,                             // height
+      //     gl.RGBA,                            // format
+      //     gl.UNSIGNED_BYTE,                   // type
+      //     pixels                              // destination array
+      // );
+
+      // // Create a temporary 2D canvas
+      // const tempCanvas = document.createElement('canvas');
+      // tempCanvas.width = width;
+      // tempCanvas.height = height;
+      // const ctx = tempCanvas.getContext('2d')!;
+      // const imageData = ctx.createImageData(width, height);
+      // imageData.data.set(pixels);
+      // ctx.putImageData(imageData, 0, 0);
+      // (window as any).image = tempCanvas;
     } finally {
       textureToScreenPass.end();
     }

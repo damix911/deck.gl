@@ -15,23 +15,23 @@ const layer = new DeckLayer({
   // effect: 'bloom(1.5, 0.5px, 0.1)',
   'deck.getTooltip': info => info.object && info.object.properties.name,
   'deck.layers': [
-    new GeoJsonLayer({
-      id: 'airports',
-      data: AIR_PORTS,
-      // Styles
-      filled: true,
-      pointRadiusMinPixels: 2,
-      pointRadiusScale: 2000,
-      getPointRadius: f => 11 - f.properties.scalerank,
-      getFillColor: [200, 0, 80, 180],
-      // Interactive props
-      pickable: true,
-      autoHighlight: true,
-      onClick: info =>
-        info.object &&
-        // eslint-disable-next-line
-        alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
-    }),
+    // new GeoJsonLayer({
+    //   id: 'airports',
+    //   data: AIR_PORTS,
+    //   // Styles
+    //   filled: true,
+    //   pointRadiusMinPixels: 2,
+    //   pointRadiusScale: 2000,
+    //   getPointRadius: f => 11 - f.properties.scalerank,
+    //   getFillColor: [200, 0, 80, 180],
+    //   // Interactive props
+    //   pickable: true,
+    //   autoHighlight: true,
+    //   onClick: info =>
+    //     info.object &&
+    //     // eslint-disable-next-line
+    //     alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
+    // }),
     new ArcLayer({
       id: 'arcs',
       data: AIR_PORTS,
@@ -39,8 +39,8 @@ const layer = new DeckLayer({
       // Styles
       getSourcePosition: f => [-0.4531566, 51.4709959], // London
       getTargetPosition: f => f.geometry.coordinates,
-      getSourceColor: [0, 128, 200],
-      getTargetColor: [200, 0, 80],
+      getSourceColor: [0, 128, 200, 255],
+      getTargetColor: [200, 0, 80, 255],
       getWidth: 1
     })
   ]
